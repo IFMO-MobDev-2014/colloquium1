@@ -116,7 +116,7 @@ public class SnakeRun extends SurfaceView implements Runnable {
         GameCell newHead = new GameCell(head.x + dx, head.y + dy);
 
 //        if (pixels[newHead.getId])
-        
+
         boolean found = false;
 
         for (ListIterator<GameCell> it = apples.listIterator(); it.hasNext();) {
