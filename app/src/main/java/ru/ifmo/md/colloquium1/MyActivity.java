@@ -7,11 +7,14 @@ import android.view.MenuItem;
 
 
 public class MyActivity extends Activity {
+    SnakeView snakeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        snakeView = new SnakeView(this);
+        setContentView(snakeView);
     }
 
 
@@ -35,5 +38,18 @@ public class MyActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        snakeView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        snakeView.pause();
     }
 }
