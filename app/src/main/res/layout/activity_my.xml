@@ -11,8 +11,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="200dp"
-            android:layout_height="300dp" />
+            android:layout_width="350dp"
+            android:layout_height="400dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -31,6 +31,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="right" />
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="restart" />
     </LinearLayout>
 
     <LinearLayout
@@ -41,7 +46,6 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium Text"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 </LinearLayout>

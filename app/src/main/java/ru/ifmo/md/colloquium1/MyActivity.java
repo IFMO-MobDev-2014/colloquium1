@@ -26,6 +26,7 @@ public class MyActivity extends Activity implements Runnable {
     ImageView image;
     Button left;
     Button right;
+    Button restart;
     TextView scoreText;
     public static final int MAX_COLOR = 2;
     public static final int STD_WIDTH = 40;
@@ -35,8 +36,8 @@ public class MyActivity extends Activity implements Runnable {
     int[] palette = {0xFFFFFFFF, 0x00FF0000, 0x0000FF00};
     int[] colors = null;
     int[] field = null;
-    int headx = 0;
-    int heady = 2;
+    int headx;
+    int heady;
     int score = 0;
     char move; //tblr
     boolean running = true;
@@ -50,6 +51,7 @@ public class MyActivity extends Activity implements Runnable {
         image = (ImageView) findViewById(R.id.imageView);
         left = (Button) findViewById(R.id.button1);
         right = (Button) findViewById(R.id.button2);
+        restart = (Button) findViewById(R.id.button3);
         scoreText = (TextView) findViewById(R.id.textView);
         left.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +81,22 @@ public class MyActivity extends Activity implements Runnable {
                 }
             }
         });
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                running = false;
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                thread = new Thread(MyActivity.this);
+                running = true;
+                score = 0;
+                thread.start();
+            }
+        });
+
         thread = new Thread(this);
         thread.start();
     }
@@ -119,6 +137,9 @@ public class MyActivity extends Activity implements Runnable {
     }
 
     void initSnake() {
+        headx = 0;
+        heady = 2;
+        snake.clear();
         width = image.getWidth();
         height = image.getHeight();
         field = new int[STD_WIDTH * STD_HEIGHT];
