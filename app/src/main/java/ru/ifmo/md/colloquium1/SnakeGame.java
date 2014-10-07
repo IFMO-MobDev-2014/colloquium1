@@ -1,7 +1,5 @@
-package ru.ifmo.md.colloquium1.myapplication;
+package ru.ifmo.md.colloquium1;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -86,7 +84,7 @@ public class SnakeGame {
 
     private void setupField() {
         field = new Cell[width][height];
-        random = new Random();
+        random = new Random(213);
         snake = new LinkedList<Coord>();
         food = new LinkedList<Coord>();
         field = new Cell[width][height];
@@ -161,6 +159,16 @@ public class SnakeGame {
         if (y < 0) y += height;
         if (y == height) y = 0;
         return new Coord(x, y);
+    }
+
+    public void setDirection(Direction d) {
+        switch (direction) {
+            case UP: if (d == Direction.DOWN) return; break;
+            case DOWN: if (d == Direction.UP) return; break;
+            case LEFT: if (d == Direction.RIGHT) return; break;
+            case RIGHT: if (d == Direction.LEFT) return; break;
+        }
+        direction = d;
     }
 
     public void setRandomDirection() {

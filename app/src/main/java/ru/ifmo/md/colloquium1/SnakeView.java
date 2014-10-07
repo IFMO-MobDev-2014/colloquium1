@@ -1,4 +1,4 @@
-package ru.ifmo.md.colloquium1.myapplication;
+package ru.ifmo.md.colloquium1;
 
 /**
  * Created by Nikita Yaschenko on 07.10.14.
@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 
 class SnakeView extends SurfaceView implements Runnable {
@@ -48,6 +49,25 @@ class SnakeView extends SurfaceView implements Runnable {
         paint = new Paint(Color.YELLOW);
         paint.setTextSize(2);
         holder = getHolder();
+
+        this.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+            public void onSwipeTop() {
+                snake.setDirection(SnakeGame.Direction.UP);
+            }
+
+            public void onSwipeRight() {
+                snake.setDirection(SnakeGame.Direction.RIGHT);
+            }
+
+            public void onSwipeLeft() {
+                snake.setDirection(SnakeGame.Direction.LEFT);
+            }
+
+            public void onSwipeBottom() {
+                snake.setDirection(SnakeGame.Direction.DOWN);
+            }
+        });
+
     }
 
     public void resume() {
