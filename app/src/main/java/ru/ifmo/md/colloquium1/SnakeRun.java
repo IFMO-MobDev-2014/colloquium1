@@ -126,6 +126,7 @@ public class SnakeRun extends SurfaceView implements Runnable {
             GameCell cur = it.next();
             if (newHead.getId() == cur.getId()) {
                 found = true;
+                apples.remove(cur);
                 break;
             }
         }
