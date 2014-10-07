@@ -20,7 +20,7 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
     public static final int fieldWidth = 40;
     public static final int foodCount = 50;
     public static final int scoreForOne = 50;
-    public static final int oneTick = 100;
+    public static final int oneTick = 80;
     public static final String endGameText = "GAME OVER";
     private final Button newGameButton;
     private final ImageView snakeScreen;
@@ -154,15 +154,19 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
     protected Bitmap doInBackground(Void... voids) {
         Bitmap bitmap = null;
         while (gameContinues) {
-            try {
-                Thread.sleep(oneTick - 50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            long startTime = System.nanoTime();
             moveSnake();
             bitmap = Bitmap.createBitmap(gameField, fieldWidth, fieldHeight, Bitmap.Config.ARGB_8888);
             bitmap = Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, false);
             publishProgress(bitmap);
+            long endTime = System.nanoTime();
+            try {
+                if (oneTick > (endTime - startTime) / 1000000) {
+                    Thread.sleep(oneTick - (endTime - startTime) / 1000000);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return bitmap;
     }

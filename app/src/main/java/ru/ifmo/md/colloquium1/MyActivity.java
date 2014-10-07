@@ -16,7 +16,6 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.snake_layout);
         Button newGameButton = (Button) findViewById(R.id.newGameButton);
-        newGameButton.setVisibility(View.INVISIBLE);
         newGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -36,6 +35,7 @@ public class MyActivity extends Activity {
         Button newGameButton = (Button) findViewById(R.id.newGameButton);
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
         ImageView snakeScreen = (ImageView) findViewById(R.id.snakeScreenView);
+        newGameButton.setVisibility(View.INVISIBLE);
         new SnakeTimer(snakeScreen, height, width, leftArrowButton, rightArrowButton, scoreText, newGameButton).execute();
     }
 
