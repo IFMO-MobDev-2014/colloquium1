@@ -107,7 +107,7 @@ public class GameState {
         for (int i = 0; i < foodX.size(); ++i)
             if (foodX.get(i) == nx && ny == foodY.get(i)) {
                 snakeX.add(0, nx);
-                snakeX.add(0, ny);
+                snakeY.add(0, ny);
                 foodX.remove(i);
                 foodY.remove(i);
                 found = true;
