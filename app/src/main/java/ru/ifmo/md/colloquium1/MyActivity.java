@@ -2,16 +2,24 @@ package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 
 public class MyActivity extends Activity {
+    GameView gameView = null;
+    GameEngine engine = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        gameView = (GameView) findViewById(R.id.gameView);
+        engine = new GameEngine();
+        gameView.engine = engine;
     }
 
 
@@ -35,5 +43,27 @@ public class MyActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        gameView.resume();
+        Log.i("Dds", "ds");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        gameView.pause();
+    }
+
+    public void buttonPressed(View button) {
+        if (R.id.button3 == button.getId())
+            engine.currentDirection = (engine.currentDirection + 3) % 4;
+        else
+            engine.currentDirection = (engine.currentDirection + 1) % 4;
+//        TextView textView = (TextView) findViewById(R.id.score);
+//        textView.setText(engine.score);
     }
 }
