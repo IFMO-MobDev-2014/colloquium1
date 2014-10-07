@@ -47,8 +47,8 @@ public class FieldCanvas {
 
     public void drawText(String text) {
         Canvas canvas = holder.lockCanvas();
-        paint.setTextSize(100);
-        canvas.drawText(text, 0, 0, paint);
+        paint.setTextSize(50);
+        canvas.drawText(text, 100, 100, paint);
         holder.unlockCanvasAndPost(canvas);
     }
 
