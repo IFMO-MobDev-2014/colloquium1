@@ -78,7 +78,7 @@ class Game extends SurfaceView implements Runnable {
                 double fps = 1000000000.0 / (finishTime - startTime);
                 Log.i("TIME", "FPS: "  + fps);
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
                 } catch (InterruptedException ignore) {}
             }
         }
