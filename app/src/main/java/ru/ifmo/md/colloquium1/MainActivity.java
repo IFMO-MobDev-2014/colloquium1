@@ -98,7 +98,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
     public void reset(boolean gameOver) {
         if (gameOver)
-            Toast.makeText(this, getString(R.string.game_over), Toast.LENGTH_SHORT);
+            Toast.makeText(this, getString(R.string.game_over), Toast.LENGTH_SHORT).show();
         surface.pause();
         surface.init();
         surface.resume();

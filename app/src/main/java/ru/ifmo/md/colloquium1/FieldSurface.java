@@ -17,16 +17,16 @@ import java.util.TimerTask;
  * Created by dimatomp on 07.10.14.
  */
 public class FieldSurface extends View {
-    public static final int INIT_LENGTH = 4;
+    public static final int INIT_LENGTH = 10;
     public static final int WIDTH = 60;
     public static final int HEIGHT = 40;
     public static final int DELAY = 100;
     private static final Random random = new Random();
-    ArrayDeque<Point> snake = new ArrayDeque<>();
+    ArrayDeque<Point> snake;
     Point candy;
     Timer stepTimer;
     int score;
-    MoveDirection direction = MoveDirection.RIGHT;
+    MoveDirection direction;
     Paint paint = new Paint();
 
     public FieldSurface(Context context) {
@@ -61,6 +61,7 @@ public class FieldSurface extends View {
         snake = new ArrayDeque<>();
         for (int i = 0; i < INIT_LENGTH; i++)
             snake.addLast(getWrapped(x - i, y));
+        direction = MoveDirection.RIGHT;
         placeNewCandy();
         paint.setStrokeWidth(getResources().getDimension(R.dimen.field_stroke_width));
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -118,34 +119,41 @@ public class FieldSurface extends View {
     }
 
     class GameTask extends TimerTask {
+        private boolean running = true;
+
         @Override
         public void run() {
-            synchronized (FieldSurface.this) {
-                Point newP = getWrapped(snake.getFirst().x + direction.x, snake.getFirst().y + direction.y);
-                if (snake.contains(newP)) {
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ((MainActivity) getContext()).reset(true);
-                        }
-                    });
+            if (running)
+                synchronized (FieldSurface.this) {
+                    Point newP = getWrapped(snake.getFirst().x + direction.x, snake.getFirst().y + direction.y);
+                    if (snake.contains(newP)) {
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                synchronized (FieldSurface.this) {
+                                    ((MainActivity) getContext()).reset(true);
+                                }
+                            }
+                        });
+                        running = false;
+                        return;
+                    }
+                    if (!newP.equals(candy)) {
+                        Rect toInv = getCell(snake.getLast());
+                        snake.removeLast();
+                        post(new Invalidator(toInv));
+                    } else {
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                setScore(score + 5);
+                            }
+                        });
+                        placeNewCandy();
+                    }
+                    snake.addFirst(newP);
+                    post(new Invalidator(getCell(newP)));
                 }
-                if (!newP.equals(candy)) {
-                    Rect toInv = getCell(snake.getLast());
-                    snake.removeLast();
-                    post(new Invalidator(toInv));
-                } else {
-                    post(new Runnable() {
-                        @Override
-                        public void run() {
-                            setScore(score + 5);
-                        }
-                    });
-                    placeNewCandy();
-                }
-                snake.addFirst(newP);
-                post(new Invalidator(getCell(newP)));
-            }
         }
     }
 
