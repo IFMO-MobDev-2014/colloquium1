@@ -2,38 +2,48 @@ package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 
 public class MyActivity extends Activity {
 
+    MySurfaceView mySurfaceView;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.linearLayout);
+        mySurfaceView = new MySurfaceView(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mySurfaceView.setLayoutParams(layoutParams);
+        layout.addView(mySurfaceView);
     }
 
+    public void onLeftClicked(View view) {
+        mySurfaceView.turnLeft();
+    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
+    public void onRestartClicked(View view) {
+        mySurfaceView.restartEverything();
+    }
+
+    public void onRightClicked(View view) {
+        mySurfaceView.turnRight();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    protected void onResume() {
+        super.onResume();
+        mySurfaceView.resume();
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mySurfaceView.pause();
     }
 }
+
