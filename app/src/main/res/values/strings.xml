@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="right_arrow_button"><![CDATA[->]]></string>
     <string name="left_arrow_button"><![CDATA[<-]]></string>
+    <string name="new_game_button">New Game</string>
 
 </resources>

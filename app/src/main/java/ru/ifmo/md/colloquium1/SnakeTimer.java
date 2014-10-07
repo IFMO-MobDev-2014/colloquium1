@@ -25,6 +25,7 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
     public static final int scoreForOne = 50;
     public static final int oneTick = 100;
     public static final String endGameText = "GAME OVER";
+    private final Button newGameButton;
     private final ImageView snakeScreen;
     private final TextView scoreText;
     private final int[] gameField = new int[fieldHeight * fieldWidth];
@@ -34,7 +35,7 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
     private int speedX;
     private int speedY;
     private int score;
-    private boolean gameContinues = true;
+    public boolean gameContinues = true;
 
     private class FieldPoint {
         private int x;
@@ -54,8 +55,9 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
         }
     }
 
-    public SnakeTimer(ImageView snakeScreen, int finalHeight, int finalWidth, Button left, Button right, TextView scoreText) {
+    public SnakeTimer(ImageView snakeScreen, int finalHeight, int finalWidth, Button left, Button right, TextView scoreText, Button newGameButton) {
         this.snakeScreen = snakeScreen;
+        this.newGameButton = newGameButton;
         snake = new ArrayList<FieldPoint>();
         snake.add(new FieldPoint(fieldWidth / 2, fieldHeight / 2));
         snake.add(new FieldPoint(fieldWidth / 2 + 1, fieldHeight / 2));
@@ -189,5 +191,6 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
         int y = (bitmap.getHeight() + bounds.height()) / 2;
 
         canvas.drawText(endGameText, x, y, paint);
+        newGameButton.setVisibility(View.VISIBLE);
     }
 }

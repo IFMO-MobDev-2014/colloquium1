@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -14,16 +15,22 @@ import android.widget.TextView;
 
 
 public class MyActivity extends Activity {
-
+    private SnakeTimer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.snake_layout);
+        Button newGameButton = (Button) findViewById(R.id.newGameButton);
+        newGameButton.setVisibility(View.INVISIBLE);
+        newGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                beginGame();
+            }
+        });
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
+    private void beginGame() {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -31,9 +38,17 @@ public class MyActivity extends Activity {
         int height = size.y - findViewById(R.id.leftArrowButton).getHeight();
         Button leftArrowButton = (Button) findViewById(R.id.leftArrowButton);
         Button rightArrowButton = (Button) findViewById(R.id.rightArrowButton);
+        Button newGameButton = (Button) findViewById(R.id.newGameButton);
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
         ImageView snakeScreen = (ImageView) findViewById(R.id.snakeScreenView);
-        new SnakeTimer(snakeScreen, height, width, leftArrowButton, rightArrowButton, scoreText).execute();
+        timer = new SnakeTimer(snakeScreen, height, width, leftArrowButton, rightArrowButton, scoreText, newGameButton);
+        timer.execute();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        beginGame();
     }
 
 }
