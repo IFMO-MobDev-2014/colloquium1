@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Snake</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="game_over">GAME OVER</string>
     <string name="action_settings">Settings</string>
 
 </resources>
