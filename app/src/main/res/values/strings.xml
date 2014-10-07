@@ -2,5 +2,10 @@
 <resources>
 
     <string name="app_name">Snake</string>
+<<<<<<< HEAD
+=======
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+>>>>>>> c133cb608984e04ad7ddd4672fa8834f383536df
 
 </resources>

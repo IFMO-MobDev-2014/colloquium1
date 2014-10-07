@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
     package="ru.ifmo.md.lesson1">
+=======
+    package="ru.ifmo.md.colloquium1" >
+>>>>>>> c133cb608984e04ad7ddd4672fa8834f383536df
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
+<<<<<<< HEAD
         android:label="@string/app_name">
         <activity
             android:name="ru.ifmo.md.colloquium1.MyActivity"
             android:label="@string/app_name">
+=======
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="ru.ifmo.md.colloquium1.MyActivity"
+            android:label="@string/app_name" >
+>>>>>>> c133cb608984e04ad7ddd4672fa8834f383536df
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

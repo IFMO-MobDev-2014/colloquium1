@@ -3,9 +3,13 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
+<<<<<<< HEAD
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="gradleHome" value="$USER_HOME$/.nix-profile" />
+=======
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+>>>>>>> c133cb608984e04ad7ddd4672fa8834f383536df
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
