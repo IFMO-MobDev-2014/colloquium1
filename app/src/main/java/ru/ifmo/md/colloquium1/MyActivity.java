@@ -2,38 +2,47 @@ package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 public class MyActivity extends Activity {
+
+    private WhirlView whirlView = null;
+    private LinearLayout linearLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
+        linearLayout = (LinearLayout)findViewById(R.id.linearLayout2);
+        whirlView = new WhirlView(this);
+        linearLayout.addView(whirlView);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onResume() {
+        super.onResume();
+        whirlView.resume();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        whirlView.pause();
+    }
+
+    public void leftMove(View v) {
+        whirlView.leftMove();
+    }
+
+    public void rightMove(View v) {
+        whirlView.rightMove();
+    }
+
+    public void reset(View v) {
+        whirlView.reset();
+    }
+
 }
