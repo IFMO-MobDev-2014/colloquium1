@@ -1,4 +1,4 @@
-package ru.ifmo.md.lesson1;
+package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
