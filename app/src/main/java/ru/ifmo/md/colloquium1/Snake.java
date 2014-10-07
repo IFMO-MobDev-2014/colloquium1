@@ -18,6 +18,7 @@ import java.util.Random;
 public class Snake extends AsyncTask<Void, Bitmap, Void> {
     ImageView imageView;
     TextView score;
+    public int countScore;
     public static final int RED = 0xFFFF0000;
     public static final int GREEN = 0xFF00FF00;
     public static final int WHITE = 0x0F000000;
@@ -94,6 +95,8 @@ public class Snake extends AsyncTask<Void, Bitmap, Void> {
         if (field[newHead.x][newHead.y] != RED) {
             field[snake.getLast().x][snake.getLast().y] = WHITE;
             snake.removeLast();
+        } else {
+            countScore++;
         }
         if (check(newHead)) {
             field[newHead.x][newHead.y] = GREEN;
@@ -122,6 +125,7 @@ public class Snake extends AsyncTask<Void, Bitmap, Void> {
     }
 
     public void initField() {
+        countScore = 0;
         field = new int[width][height];
         snake = new ArrayDeque<Point>();
         for (int x = 0; x < width; x++) {
@@ -157,6 +161,7 @@ public class Snake extends AsyncTask<Void, Bitmap, Void> {
         Log.v("bmp",""+(values[0] == null));
         Log.v("bmp",""+(imageView == null));
         imageView.setImageBitmap(values[0]);
+        score.setText(""+countScore);
     }
 
     @Override
