@@ -37,11 +37,6 @@ public class SnakeRun extends SurfaceView implements Runnable {
         public int getId() {
             return y * fieldWidth + x;
         }
-//        void move(int dx, int dy) {
-//            x += dx;
-//            y += dy;
-//            x = (x + fieldWidth) % fieldWidth;
-//            y = (y + fieldHeight) % fieldHeight;
 //        }
     }
 
@@ -120,12 +115,16 @@ public class SnakeRun extends SurfaceView implements Runnable {
         GameCell head = snake.get(0);
         GameCell newHead = new GameCell(head.x + dx, head.y + dy);
 
+//        if (pixels[newHead.getId])
+        
         boolean found = false;
 
         for (ListIterator<GameCell> it = apples.listIterator(); it.hasNext();) {
             GameCell cur = it.next();
             if (newHead.getId() == cur.getId()) {
                 found = true;
+                field[cur.x][cur.y] = 0;
+                pixels[cur.getId()] = 0xff000000;
                 apples.remove(cur);
                 break;
             }
@@ -162,6 +161,7 @@ public class SnakeRun extends SurfaceView implements Runnable {
         dy = 0;
         paint = new Paint();
         paint.setColor(Color.BLUE);
+        paint.setTextSize(20.0f);
     }
 
     public void onResume() {
@@ -175,7 +175,6 @@ public class SnakeRun extends SurfaceView implements Runnable {
         try {
             t.join();
         } catch (InterruptedException ignore) {
-
         }
     }
 
