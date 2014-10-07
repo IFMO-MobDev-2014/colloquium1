@@ -5,11 +5,8 @@ android {
     buildToolsVersion "20.0.0"
 
     defaultConfig {
-<<<<<<< HEAD
         applicationId "ru.ifmo.md.lesson1"
-=======
         applicationId "ru.ifmo.md.colloquium1"
->>>>>>> c133cb608984e04ad7ddd4672fa8834f383536df
         minSdkVersion 15
         targetSdkVersion 19
         versionCode 1
@@ -21,15 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-<<<<<<< HEAD
     lintOptions {
         abortOnError false
     }
-}
-=======
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
->>>>>>> c133cb608984e04ad7ddd4672fa8834f383536df
