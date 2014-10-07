@@ -8,6 +8,9 @@ import android.graphics.Paint;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -47,6 +50,7 @@ public class SnakeView extends SurfaceView implements Runnable {
     int direction = 0;
     int dx[] = {0, 1, 0, -1};
     int dy[] = {1, 0, -1, 0};
+    boolean gameOver = false;
 
     Random rand = new Random();
 
@@ -92,6 +96,17 @@ public class SnakeView extends SurfaceView implements Runnable {
         }
     }
 
+    public void onClick(View view) {
+        String button = (String)((Button)findViewById(view.getId())).getText();
+
+        if (button.equals("Turn left")) {
+            direction = (direction + 1) % 4;
+            updateField(1);
+        } else if (button.equals("Turn right")) {
+            direction = (direction + 3) % 4;
+            updateField(1);
+        }
+    }
     @Override
     public void onSizeChanged(int w, int h, int oldW, int oldH) {
         scaleW = (float)w / width;
@@ -123,7 +138,7 @@ public class SnakeView extends SurfaceView implements Runnable {
     }
 
     void updateField(int count) {
-        if (snake.size() == 0)
+        if (snake.size() == 0 || gameOver)
             return;
         int newX = ((snake.get(snake.size() - 1).x + dx[direction]) % width + width) % width;
         int newY = ((snake.get(snake.size() - 1).y + dy[direction]) % height + height) % height;
@@ -136,6 +151,9 @@ public class SnakeView extends SurfaceView implements Runnable {
         } else {
             snake.remove(0);
         }
+        for (int i = 0; i < snake.size() - 1; i++)
+            if (snake.get(i).x == snake.get(snake.size() - 1).x && snake.get(i).y == snake.get(snake.size() - 1).y)
+                gameOver = true;
         Log.i(TAG, String.valueOf(snake.size()));
         printSnake();
     }
@@ -150,5 +168,7 @@ public class SnakeView extends SurfaceView implements Runnable {
         canvas.scale(scaleW, scaleH);
         canvas.drawBitmap(colors, 0, width, 0, 0, width, height, false, null);
         canvas.drawText("Score: " + String.valueOf(score), 3, 7, paint);
+        if (gameOver)
+            canvas.drawText("GAME OVER!", 15, 15, paint);
     }
 }
