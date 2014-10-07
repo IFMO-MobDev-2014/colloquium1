@@ -1,11 +1,14 @@
 package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 public class MyActivity extends Activity {
@@ -50,6 +53,11 @@ public class MyActivity extends Activity {
 
     public void restart(View view) {
         snakeView.restart();
+    }
+
+    public void gameOver() {
+        snakeView.gameOvered = true;
+        snakeView.pause();
     }
 
     public void updateScore(final int score) {

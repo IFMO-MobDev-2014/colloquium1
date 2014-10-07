@@ -245,8 +245,12 @@ class SnakeView extends SurfaceView implements Runnable {
     }
 
     void gameOver() {
-        gameOvered = true;
-        pause();
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                activity.gameOver();
+            }
+        });
     }
 
     void tryToResume() {
