@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -16,6 +17,7 @@ import java.util.Random;
 public class MySurfaceView extends SurfaceView implements Runnable {
     volatile boolean running = false;
     Thread thread = null;
+    Paint paint = new Paint();
     private int width = 40;
     private int height = 60;
     private SurfaceHolder holder = getHolder();
@@ -28,7 +30,7 @@ public class MySurfaceView extends SurfaceView implements Runnable {
     private final int UP = 2;
     private final int DOWN = 3;
     private boolean game_over = false;
-    private int direction = DOWN;
+    private int direction = RIGHT;
     Bitmap bitmap = null, scaledBitmap = null;
 
     public MySurfaceView(Context context) {
@@ -38,6 +40,7 @@ public class MySurfaceView extends SurfaceView implements Runnable {
     @Override
     public void onSizeChanged(int w, int h, int oldW, int oldH) {
         initField();
+        paint.setTextSize(40);
         bitmap = Bitmap.createBitmap(width, height,Bitmap.Config.RGB_565 );
 
     }
@@ -50,8 +53,8 @@ public class MySurfaceView extends SurfaceView implements Runnable {
             }
         }
         for (int i = 0 ; i < 50; i++) {
-			int x = rand.nextInt(60);
-			int y = rand.nextInt(40);
+			int x = rand.nextInt(40);
+			int y = rand.nextInt(60);
 			pixels[y * width + x] = 0x00FF00;
 		}
 		snake = new int[3];
@@ -78,20 +81,21 @@ public class MySurfaceView extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
+        int a = 1;
         while (running) {
-			int a = 1;
             if (holder.getSurface().isValid()) {
-				a++;
+                a++;
                 //long startTime = System.nanoTime();
                 Canvas canvas = holder.lockCanvas();
                 Update();
-                if (a % 5 == 0)
-					changeDirection();
+                if (a % 3 == 0)
+                    changeDirection();
                 MyonDraw(canvas);
                 holder.unlockCanvasAndPost(canvas);
                 try {
                     Thread.sleep(1000);
-                } catch (InterruptedException ignore) {}
+                } catch (InterruptedException ignore) {
+                }
             }
         }
     }
@@ -100,23 +104,23 @@ public class MySurfaceView extends SurfaceView implements Runnable {
 		int newCoor;
 		switch (direction) {
 			case UP:
-				newCoor = snake[snake_length - 1] + width;
-				newCoor %= width * height;
+				newCoor = snake[snake_length - 1] - width;
+                if (newCoor < 0)
+				    newCoor += width * 60;
 				break;
 			case DOWN:
-				newCoor = snake[snake_length - 1] - width;
-				if (newCoor < 0)
-					newCoor = snake[snake_length - 1] + 60 * width;
+				newCoor = snake[snake_length - 1] + width;
+                newCoor %= width * height;
 				break;
 			case RIGHT:
 				newCoor = snake[snake_length - 1] + 1;
-				if (newCoor % width == 0)
-					newCoor -= 60;
+				if (newCoor  % width == 0)
+					newCoor -= 40;
 				break;
 			case LEFT:
 				newCoor = snake[snake_length - 1] - 1;
-				if (newCoor % width == 0)
-					newCoor += 60;
+				if ((newCoor + 1)  % width == 0)
+					newCoor += 40;
 				break;
             default:
                 newCoor = 0;
@@ -157,10 +161,14 @@ public class MySurfaceView extends SurfaceView implements Runnable {
 	}
 	
     public void MyonDraw(Canvas canvas) {
-        bitmap.setPixels(pixels,0,width,0,0,width,height);
-        scaledBitmap = Bitmap.createScaledBitmap(bitmap, canvas.getWidth(), canvas.getHeight(), false);
-        canvas.drawBitmap(scaledBitmap,0, 0, null );
-        canvas.drawText("Your Score : " + score,50, 50, new Paint());
+        if (!game_over) {
+            bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+            scaledBitmap = Bitmap.createScaledBitmap(bitmap, canvas.getWidth(), canvas.getHeight(), false);
+            canvas.drawBitmap(scaledBitmap, 0, 0, null);
+            canvas.drawText("Your Score : " + score, 50, 50, paint);
+        } else {
+            canvas.drawText("GAME OVER.", 100, 100, paint);
+        }
     }
 
 }
