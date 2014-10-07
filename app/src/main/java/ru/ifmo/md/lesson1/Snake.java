@@ -162,12 +162,10 @@ class Snake extends SurfaceView implements Runnable {
 
         snake.set(0, temp);
         for (int i = 0; i < snake.size(); i++) {
+            if (field[snake.get(i).x][snake.get(i).y] == SNAKE) {
+                lose = true;
+            }
             field[snake.get(i).x][snake.get(i).y] = SNAKE;
-        }
-
-        if (good == 0 && snake.get(0).x == snake.get(snake.size() - 1).x && snake.get(0).y == snake.get(snake.size() - 1).y) {
-            Log.i("LOSE", snake.get(0).x + "");
-            lose = true;
         }
     }
 
