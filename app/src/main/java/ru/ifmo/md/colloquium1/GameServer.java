@@ -20,7 +20,7 @@ public class GameServer implements Runnable {
     private Button restart;
     private GameState state;
     private Thread thread;
-
+    private GameState stsv;
     public GameServer(FieldCanvas painter, Button left, Button right, Button restart) {
         this.left = left;
         this.right = right;
@@ -50,7 +50,14 @@ public class GameServer implements Runnable {
             }
         });
 
-        painter.draw(state.getField());
+        restart.setOnClickListener(new View.OnClickListener() {
+                                       @Override
+                                       public void onClick(View view) {
+                                           state = new GameState(40, 60);
+                                           painter.draw(state.getField());
+                                       }
+                                   });
+                painter.draw(state.getField());
     }
 
     private void setTimer() {
