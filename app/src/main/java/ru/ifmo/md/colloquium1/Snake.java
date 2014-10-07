@@ -163,13 +163,13 @@ public class Snake {
     }
 
     private static Cell goTo(Cell c, Direction d) {
-        return new Cell((c.getX() + d.dx()) % WIDTH, (c.getY() + d.dy()) % HEIGHT);
+        return new Cell((c.getX() + d.dx() + WIDTH) % WIDTH, (c.getY() + d.dy() + HEIGHT) % HEIGHT);
     }
 
     private void checkCollisions() {
         for (Cell a : snake) {
             for (Cell b : snake) {
-                if (a != b && a.equals(b)) {
+                if (a != b && a.getX() == b.getX() && a.getY() == b.getY()) {
                     onCollisionListener.onCollision();
                 }
             }

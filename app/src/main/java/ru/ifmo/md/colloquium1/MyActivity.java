@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 
@@ -41,7 +42,6 @@ public class MyActivity extends Activity {
                         snakeView.restart();
                     }
                 });
-                builder.create().show();
             }
         });
     }
