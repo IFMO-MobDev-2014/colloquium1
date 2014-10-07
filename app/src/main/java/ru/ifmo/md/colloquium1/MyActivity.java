@@ -57,7 +57,7 @@ public class MyActivity extends Activity implements Runnable {
                 if (move == 't') {
                     move = 'l';
                 } else if (move == 'b') {
-                    move = 'l';
+                    move = 'r';
                 } else if (move == 'l'){
                     move = 'b';
                 } else {
@@ -71,7 +71,7 @@ public class MyActivity extends Activity implements Runnable {
                 if (move == 't') {
                     move = 'r';
                 } else if (move == 'b') {
-                    move = 'r';
+                    move = 'l';
                 } else if (move == 'l'){
                     move = 't';
                 } else {
@@ -156,9 +156,9 @@ public class MyActivity extends Activity implements Runnable {
         } else if (move == 'b') {
             nHeadY = heady + 1;
         } else if (move == 'l') {
-            nHeadX = headx + 1;
-        } else {
             nHeadX = headx - 1;
+        } else {
+            nHeadX = headx + 1;
         }
         nHeadX = (nHeadX + STD_WIDTH) % STD_WIDTH;
         nHeadY = (nHeadY + STD_HEIGHT) % STD_HEIGHT;
