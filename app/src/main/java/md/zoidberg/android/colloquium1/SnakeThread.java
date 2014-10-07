@@ -55,30 +55,41 @@ public class
         textPaint.setFakeBoldText(true);
     }
 
+    private Paint largeTextPaint = new Paint();
+    {
+        largeTextPaint.setColor(Color.WHITE);
+        largeTextPaint.setStyle(Paint.Style.FILL);
+        largeTextPaint.setTextSize(40);
+        largeTextPaint.setFakeBoldText(true);
+    }
+
     private Paint snakePaint = new Paint();
     {
-        textPaint.setColor(Color.GREEN);
-        textPaint.setStyle(Paint.Style.FILL);
+        snakePaint.setColor(Color.GREEN);
+        snakePaint.setStyle(Paint.Style.FILL);
     }
 
     private Paint foodPaint = new Paint();
     {
-        textPaint.setColor(Color.RED);
-        textPaint.setStyle(Paint.Style.FILL);
+        foodPaint.setColor(Color.RED);
+        foodPaint.setStyle(Paint.Style.FILL);
     }
 
     private Paint emptyPaint = new Paint();
     {
-        textPaint.setColor(Color.BLACK);
-        textPaint.setStyle(Paint.Style.FILL);
+        emptyPaint.setColor(Color.BLACK);
+        emptyPaint.setStyle(Paint.Style.FILL);
     }
 
     private int score;
+    private int lastScore;
     private DecimalFormat scoreFormat = new DecimalFormat("Score ###");
 
     private static final int SNAKE = 1;
     private static final int FOOD = -1;
     private static final int EMPTY = 0;
+
+    private boolean clearField = false;
 
     private int headX;
     private int headY;
@@ -100,8 +111,10 @@ public class
     }
 
     private void initField() {
+        if (clearField) return;
         field = new int[fieldHeight][fieldWidth];
         rand = new Random();
+        lastScore = score;
         score = 0;
 
         snakePoints = new ArrayList<Point>();
@@ -118,6 +131,7 @@ public class
         generateFood();
 
         Log.d("game", "initField");
+        clearField = true;
     }
 
     private void generateFood() {
@@ -133,6 +147,7 @@ public class
     }
 
     public void recalculateField() {
+        clearField = false;
         int cX = headX;
         int cY = headY;
 
@@ -170,9 +185,11 @@ public class
 
     private void redrawScreen(Canvas screen) {
         if (screen == null) return;
+        screen.drawARGB(255, 0, 0, 0);
+
         if (state != GameState.DONE) {
-            float segWidth = 30; //screen.getWidth() / fieldWidth;
-            float segHeight = 30; // /screen.getHeight() / fieldHeight;
+            float segWidth = screen.getWidth() / fieldWidth;
+            float segHeight = screen.getHeight() / fieldHeight;
             for (int y = 0; y < fieldHeight; y++) {
                 for (int x = 0; x < fieldWidth; x++) {
                     Paint paint = emptyPaint;
@@ -185,17 +202,14 @@ public class
                         draw = true;
                     }
 
-                    if (draw) screen.drawRect(y * segWidth, x * segHeight, segWidth, segHeight, paint);
+                    if (draw) screen.drawRect(x * segWidth, y * segHeight, (x + 1) * segWidth, (y + 1) * segHeight, paint);
                 }
             }
-            Log.d("game", scoreFormat.format(score));
             screen.drawText(scoreFormat.format(score), 20.0f, 40.0f, textPaint);
         } else {
             screen.drawARGB(0, 0, 0, 0);
-            screen.drawText(scoreFormat.format(score), 20.0f, 40.0f, textPaint);
+            screen.drawText(scoreFormat.format(lastScore), screen.getWidth() / 2, screen.getHeight() / 2, largeTextPaint);
         }
-
-        screen.drawCircle(40.0f, 40.0f, 20.0f, textPaint);
     }
 
     public void run() {
