@@ -90,7 +90,7 @@ public class SnakeView extends SurfaceView implements Runnable {
         initField();
     }
 
-    void initField() {
+    public void initField() {
         gameOver = -1;
         direction = 0;
         score = 0;
