@@ -85,9 +85,11 @@ class SnakeView extends SurfaceView implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        clear();
-        initField();
-        resume();
+        if(!running) {
+            clear();
+            initField();
+            resume();
+        }
         return true;
     }
 
@@ -218,11 +220,12 @@ class SnakeView extends SurfaceView implements Runnable {
         int x = snake[0][snakeLength - 1];
         int y = snake[1][snakeLength - 1];
         boolean add = false;
+        boolean exc = false;
         if (field[nx + ny * WIDTH] == Color.RED){
             add = true;
 
         } else if(field[nx + ny * WIDTH] == Color.GREEN){
-            throw new SnakeException("");
+            exc = true;
         } else {
             field[x + y * WIDTH] = Color.BLACK;
         }
@@ -243,6 +246,10 @@ class SnakeView extends SurfaceView implements Runnable {
         x = snake[0][0];
         y = snake[1][0];
         field[x + y * WIDTH] = Color.GREEN;
+        if(exc)
+        {
+            throw new SnakeException("");
+        }
 
 
         bmap.setPixels(field, 0, WIDTH,0,0, WIDTH, HEIGHT);
