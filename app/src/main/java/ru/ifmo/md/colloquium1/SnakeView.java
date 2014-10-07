@@ -30,7 +30,6 @@ class SnakeView extends SurfaceView implements Runnable {
     volatile boolean running = false;
     int direction;
     LinkedList<Point> snake;
-    int score;
     boolean initted;
     Random rand;
 
@@ -69,7 +68,6 @@ class SnakeView extends SurfaceView implements Runnable {
         hasFood = new boolean[WIDTH][HEIGHT];
         hasSnake = new boolean[WIDTH][HEIGHT];
         turned = false;
-        score = 0;
 
         // create food
         int toChoose = 50;
@@ -120,7 +118,6 @@ class SnakeView extends SurfaceView implements Runnable {
                 restart();
             } else {
                 if (hasFood[x2][y2]) {
-                    score++;
                     hasFood[x2][y2] = false;
                 } else {
                     snake.removeFirst();
