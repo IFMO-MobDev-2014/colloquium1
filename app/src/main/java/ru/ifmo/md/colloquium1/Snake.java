@@ -182,6 +182,7 @@ public class Snake {
         }
         snake.addFirst(goTo(snake.peekFirst(), direction));
         checkEaten();
+        checkCollisions();
     }
 
     private void checkEaten() {
