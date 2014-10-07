@@ -8,14 +8,28 @@ import android.view.MenuItem;
 
 public class MyActivity extends Activity {
 
+    private SnakeView snakeView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        snakeView = new SnakeView(this);
+        setContentView(snakeView);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        snakeView.resume();
+    }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        snakeView.pause();
+    }
+
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.my, menu);
@@ -35,5 +49,5 @@ public class MyActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }
