@@ -2,5 +2,9 @@
 <resources>
 
     <string name="app_name">Whirl</string>
+    <string name="button1">Left</string>
+    <string name="button2">Reset</string>
+    <string name="button3">Right</string>
+
 
 </resources>
