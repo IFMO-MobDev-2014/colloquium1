@@ -4,5 +4,9 @@
     <string name="app_name">Snake</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="score_str">Score: </string>
+    <string name="arrow_right"><![CDATA[->]]></string>
+    <string name="arrow_left"><![CDATA[<-]]></string>
+    <string name="restart_btn">Restart</string>
 
 </resources>
