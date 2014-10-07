@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MyActivity" >
+
+    <item
+        android:id="@+id/action_score"
+        android:showAsAction="always"
+        android:title="" />
+
+    <item
+        android:id="@+id/action_restart"
+        android:showAsAction="always"
+        android:title="@string/restart" />
+</menu>
