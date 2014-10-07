@@ -98,8 +98,8 @@ class SnakeView extends SurfaceView implements Runnable {
         field[20][20]=0;
         field[20][21]=0;
         field[20][22]=0;
-        moves.add(2);
-        moves.add(2);
+        moves.add(3);
+        moves.add(3);
     }
 
     boolean isSnake(int a, int b){
@@ -115,24 +115,21 @@ class SnakeView extends SurfaceView implements Runnable {
         int move = rand.nextInt(4);
         if ((move==0) && !(isSnake(head.x+1,head.y))) {
             head.x++;
-            moves.add(0);
             flag=true;
         }
         if ((move==1) && !(isSnake(head.x,head.y+1))) {
             head.y++;
             flag=true;
-            moves.add(1);
         }
         if ((move==2) && !(isSnake(head.x-1,head.y))) {
             head.x--;
             flag=true;
-            moves.add(2);
         }
         if ((move==3) && !(isSnake(head.x,head.y-1))) {
             head.y--;
             flag=true;
-            moves.add(3);
         }
+
 
         if (field[head.x][head.y]==1) {
             Log.i("TIME", "Circle: " + field[tail.x][tail.y]);
@@ -154,6 +151,7 @@ class SnakeView extends SurfaceView implements Runnable {
         }
         if (flag) {
             field[head.x][head.y] = 0;
+            moves.add(move);
         }
 
         for (int i = 0; i < width; i++) {
