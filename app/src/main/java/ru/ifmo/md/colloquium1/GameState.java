@@ -17,7 +17,7 @@ public class GameState {
     public final int WIDTH;
     public final int HEIGHT;
     public final  int FOODS = 50;
-    private boolean gameOver;
+    private boolean gameOver = false;
 
     private ArrayList <Integer> foodX, foodY;
     private ArrayList <Integer> snakeX, snakeY;
@@ -92,11 +92,6 @@ public class GameState {
     public void move() {
         if (gameOver)
             return;
-        Log.i("MVSIZE ", "Sn = " + snakeX.size());
-        Log.i("MVSIZE ", "Sn = " + snakeY.size());
-
-        Log.i("MVSIZE ", "Sn = " + foodX.size());
-        Log.i("MVSIZE ", "Sn = " + foodY.size());
         int nx = snakeX.get(0) + DX[direction];
         int ny = snakeY.get(0) + DY[direction];
         if (nx < 0) nx = WIDTH - 1;

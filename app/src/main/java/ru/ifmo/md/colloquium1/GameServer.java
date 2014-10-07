@@ -64,13 +64,13 @@ public class GameServer implements Runnable {
         timerGame.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (state.isGameOver())
+                    return;
                 state.move();
                 if (!state.isGameOver())
                     painter.draw(state.getField());
-                else {
+                else
                     painter.drawText("Game Over!\nScore: " + Integer.toString(state.getScore()));
-                    timerGame.cancel();
-                }
             }
         }, PERIOD, PERIOD);
 
