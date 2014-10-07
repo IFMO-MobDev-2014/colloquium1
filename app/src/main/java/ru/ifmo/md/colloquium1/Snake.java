@@ -21,6 +21,7 @@ public class Snake {
     private volatile boolean running = true;
 
     private ScoreChangedListener listener;
+    private OnCollisionListener onCollisionListener;
 
     static interface ScoreChangedListener {
         void onScoreChanged(int score);
@@ -105,6 +106,10 @@ public class Snake {
         this.listener = listener;
     }
 
+    public void setOnCollisionListener(OnCollisionListener onCollisionListener) {
+        this.onCollisionListener = onCollisionListener;
+    }
+
     public void pause() {
         running = false;
         try {
@@ -136,6 +141,16 @@ public class Snake {
         return new Cell((c.getX() + d.dx()) % WIDTH, (c.getY() + d.dy()) % HEIGHT);
     }
 
+    private void checkCollisions() {
+        for (Cell a : snake) {
+            for (Cell b : snake) {
+                if (a != b && a.equals(b)) {
+                    onCollisionListener.onCollision();
+                }
+            }
+        }
+    }
+
     private void update() {
         if (snake.size() >= length) {
             snake.pollLast();
@@ -158,5 +173,9 @@ public class Snake {
         length++;
         score++;
         listener.onScoreChanged(score);
+    }
+
+    interface OnCollisionListener {
+        public void onCollision();
     }
 }

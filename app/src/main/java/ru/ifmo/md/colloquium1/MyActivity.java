@@ -22,6 +22,13 @@ public class MyActivity extends Activity {
                 Log.d("SCORE", score + "");
             }
         });
+
+        snakeView.setOnCollisionListener(new Snake.OnCollisionListener() {
+            @Override
+            public void onCollision() {
+                snakeView.restart();
+            }
+        });
     }
 
     @Override
@@ -45,6 +52,6 @@ public class MyActivity extends Activity {
     }
 
     public void onRestartClick(View view) {
-
+        snakeView.restart();
     }
 }

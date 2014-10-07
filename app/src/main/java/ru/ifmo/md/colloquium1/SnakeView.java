@@ -14,8 +14,8 @@ import android.view.SurfaceView;
  */
 class SnakeView extends SurfaceView {
     private final SurfaceHolder holder;
-    private final Snake snake;
-    private final Food food;
+    private Snake snake;
+    private Food food;
     private final Paint paint;
 
     private float scaleX;
@@ -76,6 +76,10 @@ class SnakeView extends SurfaceView {
         snake.setListener(listener);
     }
 
+    public void setOnCollisionListener(Snake.OnCollisionListener onCollisionListener) {
+        snake.setOnCollisionListener(onCollisionListener);
+    }
+
     @Override
     public void onSizeChanged(int w, int h, int oldW, int oldH) {
         scaleX = w / Snake.WIDTH;
@@ -109,5 +113,12 @@ class SnakeView extends SurfaceView {
             canvas.drawRect(cell.getX() * scaleX, cell.getY() * scaleY,
                     (cell.getX() + 1) * scaleX, (cell.getY() + 1) * scaleY, paint);
         }
+    }
+
+    public void restart() {
+        pause();
+        food = new Food();
+        snake = new Snake(food);
+        resume();
     }
 }
