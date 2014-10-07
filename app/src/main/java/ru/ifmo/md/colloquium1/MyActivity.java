@@ -2,18 +2,34 @@ package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MyActivity extends Activity {
+    SnakeRun snakeRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        //setContentView(R.layout.activity_my);
+        //Display display = getWindowManager().getDefaultDisplay();
+        snakeRun = new SnakeRun(this);
+        setContentView(snakeRun);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        snakeRun.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        snakeRun.onPause();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
