@@ -130,7 +130,7 @@ public class MyActivity extends Activity {
             Paint paint = new Paint();
             paint.setColor(0xFF00FF);
             paint.setTextSize(50);
-            canvas.drawText("fps: " + fps, 30, 100, paint);
+            canvas.drawText("score: " + snail.length, 30, 100, paint);
 
             invalidate();
         }
