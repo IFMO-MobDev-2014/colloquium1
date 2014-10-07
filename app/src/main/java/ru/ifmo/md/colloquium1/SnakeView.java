@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -14,6 +15,7 @@ import android.view.SurfaceView;
 class SnakeView extends SurfaceView {
     private final SurfaceHolder holder;
     private final Snake snake;
+    private final Food food;
     private final Paint paint;
 
     private float scaleX;
@@ -22,11 +24,12 @@ class SnakeView extends SurfaceView {
     private Thread drawThread = null;
     private volatile boolean running = false;
 
-    public SnakeView(Context context) {
-        super(context);
+    public SnakeView(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
         holder = getHolder();
-        snake = new Snake();
+        food = new Food();
+        snake = new Snake(food);
         paint = new Paint();
         paint.setColor(Color.GREEN);
     }
@@ -65,6 +68,14 @@ class SnakeView extends SurfaceView {
         }
     }
 
+    public void rotate(Snake.Direction direction) {
+        snake.rotate(direction);
+    }
+
+    public void setOnScoreChangedListener(Snake.ScoreChangedListener listener) {
+        snake.setListener(listener);
+    }
+
     @Override
     public void onSizeChanged(int w, int h, int oldW, int oldH) {
         scaleX = w / Snake.WIDTH;
@@ -73,12 +84,26 @@ class SnakeView extends SurfaceView {
 
     @Override
     public void onDraw(Canvas canvas) {
-        // Clear screen
+        clearScreen(canvas);
+
+        drawSnake(canvas);
+        drawFood(canvas);
+    }
+
+    private void clearScreen(Canvas canvas) {
         paint.setColor(Color.BLACK);
         canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+    }
 
+    private void drawFood(Canvas canvas) {
+        paint.setColor(Color.RED);
+        for (Food.Fruit fruit : food.getFruits()) {
+            canvas.drawRect(fruit.getX() * scaleX, fruit.getY() * scaleY,
+                    (fruit.getX() + 1) * scaleX, (fruit.getY() + 1) * scaleY, paint);
+        }
+    }
 
-
+    private void drawSnake(Canvas canvas) {
         paint.setColor(Color.GREEN);
         for (Snake.Cell cell : snake.getSnake()) {
             canvas.drawRect(cell.getX() * scaleX, cell.getY() * scaleY,

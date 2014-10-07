@@ -9,6 +9,22 @@ import java.util.LinkedList;
 public class Snake {
     public static final int WIDTH = 40;
     public static final int HEIGHT = 60;
+    public static final int START_LENGTH = 3;
+    private static final Direction[] directions = {Direction.LEFT, Direction.UP, Direction.RIGHT, Direction.DOWN};
+    public static final int STEPS_DELAY = 200;
+    private final Food food;
+    private final Deque<Cell> snake;
+    private Direction direction;
+    private int length = START_LENGTH;
+    private int score = 0;
+    private Thread updaterThread = null;
+    private volatile boolean running = true;
+
+    private ScoreChangedListener listener;
+
+    static interface ScoreChangedListener {
+        void onScoreChanged(int score);
+    }
 
     static public final class Cell {
         private final int x;
@@ -28,11 +44,21 @@ public class Snake {
         }
     }
 
-    static private enum Direction {
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN;
+    public static enum Direction {
+        LEFT(0),
+        UP(1),
+        RIGHT(2),
+        DOWN(3);
+
+        private final int value;
+
+        Direction(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
 
         public int dx() {
             switch (this) {
@@ -57,21 +83,26 @@ public class Snake {
         }
     }
 
-    private final Deque<Cell> snake;
-    private final Direction direction;
-    private Thread updaterThread = null;
-    private volatile boolean running = true;
+    public Snake(Food food) {
+        snake = new LinkedList<Cell>();
+        this.food = food;
+        for (int i = 0; i < START_LENGTH; i++) {
+            snake.addFirst(new Cell(i, 0));
+        }
+        direction = Direction.RIGHT;
+    }
 
     public Deque<Cell> getSnake() {
         return snake;
     }
 
-    public Snake() {
-        snake = new LinkedList<Cell>();
-        for (int i = 0; i < 3; i++) {
-            snake.addFirst(new Cell(i, 0));
-        }
-        direction = Direction.RIGHT;
+    public void rotate(Direction to) {
+        this.direction = directions[
+                (this.direction.getValue() + to.dx() + directions.length) % directions.length];
+    }
+
+    public void setListener(ScoreChangedListener listener) {
+        this.listener = listener;
     }
 
     public void pause() {
@@ -89,7 +120,7 @@ public class Snake {
             public void run() {
                 while (running) {
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(STEPS_DELAY);
                     } catch (InterruptedException ignore) {
                     }
 
@@ -106,7 +137,26 @@ public class Snake {
     }
 
     private void update() {
-        snake.pollLast();
+        if (snake.size() >= length) {
+            snake.pollLast();
+        }
         snake.addFirst(goTo(snake.peekFirst(), direction));
+        checkEaten();
+    }
+
+    private void checkEaten() {
+        for (Food.Fruit fruit : food.getFruits()) {
+            Cell head = snake.peekFirst();
+            if (fruit.getX() == head.getX() && fruit.getY() == head.getY()) {
+                food.eaten(fruit);
+                eaten();
+            }
+        }
+    }
+
+    private void eaten() {
+        length++;
+        score++;
+        listener.onScoreChanged(score);
     }
 }

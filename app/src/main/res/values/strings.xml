@@ -2,5 +2,8 @@
 <resources>
 
     <string name="app_name">Snake</string>
+    <string name="right">Right</string>
+    <string name="restart">Restart</string>
+    <string name="left">Left</string>
 
 </resources>
