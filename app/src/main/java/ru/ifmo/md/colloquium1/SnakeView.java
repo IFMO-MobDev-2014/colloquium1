@@ -130,6 +130,8 @@ public class SnakeView extends SurfaceView implements Runnable {
         commands.add(new Pair(dx, dy));
         headX += commands.get(commands.size() - 1).first;
         headY += commands.get(commands.size() - 1).second;
+        if (headX < 0) headX += width;
+        if (headY < 0) headX += height;
         headX %= width;
         headY %= height;
 
@@ -148,7 +150,8 @@ public class SnakeView extends SurfaceView implements Runnable {
             tailY += commands.get(0).second;
             tailX %= width;
             tailY %= height;
-
+            if (tailX < 0) tailX += width;
+            if (tailY < 0) tailY += height;
             commands.remove(0);
         }
 
