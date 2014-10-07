@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,16 +17,18 @@ import java.util.List;
 import java.util.Random;
 
 public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
-    public static final int fieldHeight = 60;
-    public static final int fieldWidth = 40;
-    public static final int foodCount = 50;
-    public static final int scoreForOne = 50;
-    public static final int oneTick = 80;
-    public static final String endGameText = "GAME OVER";
+    public static final int FIELD_HEIGHT = 60;
+    public static final int FIELD_WIDTH = 40;
+    public static final int FOOD_COUNT = 50;
+    public static final int SCORE_FOR_ONE = 50;
+    public static final int ONE_TICK = 80;
+    public static final int SNAKE_COLOR = Color.GREEN;
+    public static final int FOOD_COLOR = Color.RED;
+    public static final String END_GAME_TEXT = "GAME OVER";
     private final Button newGameButton;
     private final ImageView snakeScreen;
     private final TextView scoreText;
-    private final int[] gameField = new int[fieldHeight * fieldWidth];
+    private final int[] gameField = new int[FIELD_HEIGHT * FIELD_WIDTH];
     private final int finalHeight;
     private final int finalWidth;
     private List<FieldPoint> snake;
@@ -33,6 +36,7 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
     private int speedY;
     private int score;
     public boolean gameContinues = true;
+    public boolean gameStopped = false;
 
     private class FieldPoint {
         private int x;
@@ -56,20 +60,20 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
         this.snakeScreen = snakeScreen;
         this.newGameButton = newGameButton;
         snake = new ArrayList<FieldPoint>();
-        snake.add(new FieldPoint(fieldWidth / 2, fieldHeight / 2));
-        snake.add(new FieldPoint(fieldWidth / 2 + 1, fieldHeight / 2));
-        snake.add(new FieldPoint(fieldWidth / 2 + 2, fieldHeight / 2));
+        snake.add(new FieldPoint(FIELD_WIDTH / 2, FIELD_HEIGHT / 2));
+        snake.add(new FieldPoint(FIELD_WIDTH / 2 + 1, FIELD_HEIGHT / 2));
+        snake.add(new FieldPoint(FIELD_WIDTH / 2 + 2, FIELD_HEIGHT / 2));
         speedX = 1;
         speedY = 0;
         this.finalHeight = finalHeight;
         this.finalWidth = finalWidth;
         this.scoreText = scoreText;
         Random rnd = new Random();
-        for (int i = 0; i < foodCount; i++) {
-            int newX = rnd.nextInt(fieldWidth);
-            int newY = rnd.nextInt(fieldHeight);
-            if (gameField[newY * fieldWidth + newX] != Color.RED) {
-                gameField[newY * fieldWidth + newX] = Color.RED;
+        for (int i = 0; i < FOOD_COUNT; i++) {
+            int newX = rnd.nextInt(FIELD_WIDTH);
+            int newY = rnd.nextInt(FIELD_HEIGHT);
+            if (gameField[newY * FIELD_WIDTH + newX] != FOOD_COLOR) {
+                gameField[newY * FIELD_WIDTH + newX] = FOOD_COLOR;
             } else {
                 i--;
             }
@@ -128,24 +132,24 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
 
     private void moveSnake() {
         List<FieldPoint> newSnake = new ArrayList<FieldPoint>();
-        int newX = (snake.get(0).getX() + speedX + fieldWidth) % fieldWidth;
-        int newY = (snake.get(0).getY() + speedY + fieldHeight) % fieldHeight;
-        if (gameField[newY * fieldWidth + newX] == Color.GREEN) {
+        int newX = (snake.get(0).getX() + speedX + FIELD_WIDTH) % FIELD_WIDTH;
+        int newY = (snake.get(0).getY() + speedY + FIELD_HEIGHT) % FIELD_HEIGHT;
+        if (gameField[newY * FIELD_WIDTH + newX] == SNAKE_COLOR) {
             gameContinues = false;
         }
         newSnake.add(new FieldPoint(newX, newY));
         for (int i = 0; i < snake.size() - 1; i++) {
             newSnake.add(snake.get(i));
         }
-        if (gameField[newY * fieldWidth + newX] == Color.RED) {
+        if (gameField[newY * FIELD_WIDTH + newX] == FOOD_COLOR) {
             newSnake.add(snake.get(snake.size() - 1));
-            score += scoreForOne;
+            score += SCORE_FOR_ONE;
         }
         for (FieldPoint point : snake) {
-            gameField[point.getY() * fieldWidth + point.getX()] = 0;
+            gameField[point.getY() * FIELD_WIDTH + point.getX()] = 0;
         }
         for (FieldPoint point : newSnake) {
-            gameField[point.getY() * fieldWidth + point.getX()] = Color.GREEN;
+            gameField[point.getY() * FIELD_WIDTH + point.getX()] = SNAKE_COLOR;
         }
         snake = newSnake;
     }
@@ -156,13 +160,13 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
         while (gameContinues) {
             long startTime = System.nanoTime();
             moveSnake();
-            bitmap = Bitmap.createBitmap(gameField, fieldWidth, fieldHeight, Bitmap.Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(gameField, FIELD_WIDTH, FIELD_HEIGHT, Bitmap.Config.ARGB_8888);
             bitmap = Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, false);
             publishProgress(bitmap);
             long endTime = System.nanoTime();
             try {
-                if (oneTick > (endTime - startTime) / 1000000) {
-                    Thread.sleep(oneTick - (endTime - startTime) / 1000000);
+                if (ONE_TICK > (endTime - startTime) / 1000000) {
+                    Thread.sleep(ONE_TICK - (endTime - startTime) / 1000000);
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -173,23 +177,27 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
 
     @Override
     protected void onProgressUpdate(Bitmap... values) {
+        Log.d("Wut?", "Publish bitmap");
         snakeScreen.setImageBitmap(values[0]);
         scoreText.setText("Score: " + score);
     }
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
+        if (gameStopped) {
+            return;
+        }
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.BLACK);
         paint.setTextSize(140);
 
         Rect bounds = new Rect();
-        paint.getTextBounds(endGameText, 0, endGameText.length(), bounds);
+        paint.getTextBounds(END_GAME_TEXT, 0, END_GAME_TEXT.length(), bounds);
         int x = (bitmap.getWidth() - bounds.width()) / 2;
         int y = (bitmap.getHeight() + bounds.height()) / 2;
 
-        canvas.drawText(endGameText, x, y, paint);
+        canvas.drawText(END_GAME_TEXT, x, y, paint);
         newGameButton.setVisibility(View.VISIBLE);
     }
 }
