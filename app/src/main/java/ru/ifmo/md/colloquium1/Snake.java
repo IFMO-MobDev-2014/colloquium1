@@ -47,6 +47,7 @@ public class Snake {
             another.x = (p.x + 1) % 40;
             another.y = p.y;
         }
+        snake.add(another);
                     // 0 -> 2
             // 1 -> 3
             // 2 -> 0
