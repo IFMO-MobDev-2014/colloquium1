@@ -99,6 +99,7 @@ public class MySurfaceView extends SurfaceView implements Runnable {
             int x = snake.get(i).x;
             int y = snake.get(i).y;
             field1[x][y] = SNAKE;
+            field2[x][y] = SNAKE;
         }
         addFood(50);
     }
@@ -154,7 +155,7 @@ public class MySurfaceView extends SurfaceView implements Runnable {
                 case LEFT: nx = x - 1; break;
                 case RIGHT: nx = x + 1; break;
                 case UP: ny = y - 1; break;
-                case DOWN: nx = y + 1; break;
+                case DOWN: ny = y + 1; break;
             }
             if (nx < 0) nx += WIDTH;
             if (nx >= WIDTH) nx -= WIDTH;
@@ -206,6 +207,23 @@ public class MySurfaceView extends SurfaceView implements Runnable {
     }
 
     public void turnRight() {
+        Direction direction = snake.get(0).direction;
+        Direction newDirection = Direction.NOTHING;
+        switch (direction) {
+            case LEFT:
+                newDirection = Direction.UP;
+                break;
+            case UP:
+                newDirection = Direction.RIGHT;
+                break;
+            case RIGHT:
+                newDirection = Direction.DOWN;
+                break;
+            case DOWN:
+                newDirection = Direction.LEFT;
+                break;
+        }
+        snake.get(0).direction = newDirection;
     }
 
     public void gameOver() {
