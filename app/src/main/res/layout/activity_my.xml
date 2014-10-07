@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:text="SCORE:"
             android:id="@+id/textView"
-            android:textSize="30dp" />
+            android:textSize="25dp" />
 
         <Button
             android:layout_width="match_parent"

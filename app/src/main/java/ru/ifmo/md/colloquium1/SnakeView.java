@@ -76,7 +76,7 @@ public class SnakeView extends SurfaceView implements Runnable {
                         draw(canvas);
                         holder.unlockCanvasAndPost(canvas);
                         running = state.tick();
-                        ((TextView)findViewById(R.id.textView)).setText("SCORE: " + getScore());
+                        //((TextView)findViewById(R.id.textView)).setText("SCORE: " + getScore());
                     }
                 }
             }
