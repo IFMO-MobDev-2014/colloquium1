@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by wibk on 07.10.14.
- */
 public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
     public static final int fieldHeight = 60;
     public static final int fieldWidth = 40;
@@ -99,7 +96,6 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
                 if (speedY == -1) {
                     speedY = 0;
                     speedX = -1;
-                    return;
                 }
             }
         });
@@ -125,7 +121,6 @@ public class SnakeTimer extends AsyncTask<Void, Bitmap, Bitmap> {
                 if (speedY == -1) {
                     speedY = 0;
                     speedX = 1;
-                    return;
                 }
             }
         });

@@ -3,19 +3,14 @@ package ru.ifmo.md.colloquium1;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
 public class MyActivity extends Activity {
-    private SnakeTimer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +36,7 @@ public class MyActivity extends Activity {
         Button newGameButton = (Button) findViewById(R.id.newGameButton);
         TextView scoreText = (TextView) findViewById(R.id.scoreText);
         ImageView snakeScreen = (ImageView) findViewById(R.id.snakeScreenView);
-        timer = new SnakeTimer(snakeScreen, height, width, leftArrowButton, rightArrowButton, scoreText, newGameButton);
-        timer.execute();
+        new SnakeTimer(snakeScreen, height, width, leftArrowButton, rightArrowButton, scoreText, newGameButton).execute();
     }
 
     @Override
