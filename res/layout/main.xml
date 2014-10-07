@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                tools:context=".MyActivity">
+
+    <ru.ifmo.md.colloquium1.SnakeView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/field"
+            android:layout_above="@+id/right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/score"
+            android:text="Score:"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/field"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/reset"/>
+
+    <Button
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="→"
+            android:id="@+id/right"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:onClick="right"/>
+
+    <Button
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:id="@+id/left"
+            android:layout_alignTop="@+id/right"
+            android:layout_toLeftOf="@+id/right"
+            android:onClick="left"/>
+
+    <Button
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:text="Reset"
+            android:id="@+id/reset"
+            android:layout_alignBottom="@+id/score"
+            android:layout_toLeftOf="@+id/left"
+            android:onClick="reset"/>
+
+
+</RelativeLayout>
