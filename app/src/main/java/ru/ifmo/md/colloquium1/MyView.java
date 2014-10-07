@@ -1,4 +1,4 @@
-package ru.ifmo.mobdev.colloquium1;
+package ru.ifmo.md.colloquium1;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -21,7 +21,6 @@ public class MyView extends SurfaceView implements Runnable {
 
     private final Handler handler;
     private Paint p = new Paint();
-    private MainActivity mainActivity;
 
     public void restart() {
         snakeCoordinates.clear();
