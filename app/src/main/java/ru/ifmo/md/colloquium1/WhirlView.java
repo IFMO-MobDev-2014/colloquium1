@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,13 +30,15 @@ class WhirlView extends SurfaceView implements Runnable {
     Bitmap place = null;
     Rect destRect = null;
     final int MAX_COLOR = 3;
-    int[] palette = {0x00000, 0xFFFFFF, 0xEE0000,  0xFF008000, 0xFF00FF00, 0xFF008080, 0xFF0000FF, 0xFF000080, 0xFF800080, 0xFFFFFFFF};
+    int[] palette = {0x00000, 0x00FF00, 0xEE0000,  0xFF008000, 0xFF00FF00, 0xFF008080, 0xFF0000FF, 0xFF000080, 0xFF800080, 0xFFFFFFFF};
     SurfaceHolder holder;
     Thread thread = null;
+    private Toast toast = null;
     volatile boolean running = false;
 
-    public WhirlView(Context context) {
+    public WhirlView(Context context, Toast toast) {
         super(context);
+        this.toast = toast;
         holder = getHolder();
     }
 
@@ -169,6 +172,7 @@ class WhirlView extends SurfaceView implements Runnable {
 
         if (checkForFreeze(new Point(snake.get(0)))) {
             pause();
+            return;
         }
 
         ArrayList<Point> oldSnake = new ArrayList<Point>(snake);

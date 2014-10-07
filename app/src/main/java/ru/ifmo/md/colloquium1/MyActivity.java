@@ -4,20 +4,22 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MyActivity extends Activity {
 
     private WhirlView whirlView = null;
     private LinearLayout linearLayout = null;
+    private Toast toast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
         linearLayout = (LinearLayout)findViewById(R.id.linearLayout2);
-        whirlView = new WhirlView(this);
+        toast = new Toast(this);
+        whirlView = new WhirlView(this, toast);
         linearLayout.addView(whirlView);
     }
 
