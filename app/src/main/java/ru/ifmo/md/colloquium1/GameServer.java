@@ -1,5 +1,6 @@
 package ru.ifmo.md.colloquium1;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -9,15 +10,16 @@ import java.util.TimerTask;
 /**
  * Created by pva701 on 07.10.14.
  */
-public class GameServer {
+public class GameServer implements Runnable {
     private Timer timerGame;
-    private int PERIOD = 1000;
+    private int PERIOD = 500;
     private FieldCanvas painter;
     private GameServer server;
     private Button left;
     private Button right;
     private Button restart;
     private GameState state;
+    private Thread thread;
 
     public GameServer(FieldCanvas painter, Button left, Button right, Button restart) {
         this.left = left;
@@ -25,10 +27,15 @@ public class GameServer {
         this.restart = restart;
         this.painter = painter;
         state = new GameState(40, 60);
+        thread = new Thread(this);
+        thread.start();
+    }
 
+    @Override
+    public void run() {
+        while (!painter.created());
         timerGame = new Timer();
         setTimer();
-
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,6 +50,7 @@ public class GameServer {
             }
         });
 
+        painter.draw(state.getField());
     }
 
     private void setTimer() {
@@ -50,8 +58,12 @@ public class GameServer {
             @Override
             public void run() {
                 state.move();
-                painter.draw(state.getField());
-
+                if (!state.isGameOver())
+                    painter.draw(state.getField());
+                else {
+                    painter.drawText("Game Over!\nScore: " + Integer.toString(state.getScore()));
+                    timerGame.cancel();
+                }
             }
         }, PERIOD, PERIOD);
 
