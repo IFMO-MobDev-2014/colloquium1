@@ -133,8 +133,8 @@ class SnakeView extends SurfaceView implements Runnable {
             snake[1][i] = yy;
 
             field[xx + yy * WIDTH] = Color.GREEN;
-            xx -= dx;
-            yy -= dy;
+            xx = (xx - dx + WIDTH) % WIDTH;
+            yy = (yy - dy + HEIGHT) % HEIGHT;
         }
         for(int food = 0; food < 50;){
             int x = rand.nextInt(40);
