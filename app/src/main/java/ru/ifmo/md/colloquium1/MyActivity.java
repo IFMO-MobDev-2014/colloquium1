@@ -8,10 +8,25 @@ import android.view.MenuItem;
 
 public class MyActivity extends Activity {
 
+    private Zmeika zmeika;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        zmeika = new Zmeika(this);
+        setContentView(zmeika);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        zmeika.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        zmeika.pause();
     }
 
 
