@@ -59,7 +59,14 @@ class Snake extends SurfaceView implements Runnable {
     }
 
     public void restart() {
-        lose = true;
+        h2.sendEmptyMessage(score);
+        lose = false;
+        initField();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public Snake(Context context, Handler h) {
@@ -88,14 +95,7 @@ class Snake extends SurfaceView implements Runnable {
         int cntCycle = 0;
         while (running) {
             if (lose) {
-                h2.sendEmptyMessage(score);
-                lose = false;
-                initField();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                restart();
             }
 
             if (holder.getSurface().isValid()) {

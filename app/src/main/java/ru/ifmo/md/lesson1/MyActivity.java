@@ -23,7 +23,7 @@ public class MyActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_main);
+        setContentView(R.layout.main_layout);
 
         h = new Handler() {
            public void  handleMessage(Message msg) {
