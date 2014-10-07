@@ -26,7 +26,8 @@
             android:layout_height="match_parent"
             android:text="REPLAY"
             android:id="@+id/repBtn"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:onClick="goClick" />
 
     </LinearLayout>
 
