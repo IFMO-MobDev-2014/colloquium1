@@ -2,6 +2,8 @@ package ru.ifmo.md.colloquium1;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.util.Pair;
 import android.view.SurfaceHolder;
@@ -17,8 +19,10 @@ class Game extends SurfaceView implements Runnable {
     Random gen = new Random();
     Field field = new Field();
     Snake snake = new Snake();
+    Paint paint = new Paint();
     int [] colors = new int[3];
     int step;
+    boolean notOver = true;
 
 
     SurfaceHolder holder;
@@ -32,6 +36,8 @@ class Game extends SurfaceView implements Runnable {
         colors[0] = 0x000000;
         colors[1] = 0x00FF00;
         colors[2] = 0xFF0000;
+        paint.setColor(Color.BLUE);
+        paint.setTextSize(80);
     }
 
     public void resume() {
@@ -52,7 +58,9 @@ class Game extends SurfaceView implements Runnable {
             if (holder.getSurface().isValid()) {
                 long startTime = System.nanoTime();
                 Canvas canvas = holder.lockCanvas();
-                snake.move();
+                if (notOver) {
+                    snake.move();
+                }
                 if (++step % 4 == 0) {
                     int dir = snake.direction;
                     int newdir = gen.nextInt(4);
@@ -70,7 +78,7 @@ class Game extends SurfaceView implements Runnable {
                 double fps = 1000000000.0 / (finishTime - startTime);
                 Log.i("TIME", "FPS: "  + fps);
                 try {
-                    Thread.sleep(250);
+                    Thread.sleep(10);
                 } catch (InterruptedException ignore) {}
             }
         }
@@ -84,6 +92,10 @@ class Game extends SurfaceView implements Runnable {
             }
         }
         canvas.drawBitmap(Bitmap.createScaledBitmap(screen, canvas.getWidth(), canvas.getHeight(), false), 0, 0, null);
+        canvas.drawText("Score:" + (snake.length - 3), 20, 90, paint);
+        if (!notOver) {
+            canvas.drawText("Game over!", 300, 800, paint);
+        }
     }
 
     private class Snake {
@@ -102,7 +114,7 @@ class Game extends SurfaceView implements Runnable {
             this.headX = 5 + gen.nextInt(30);
             this.headY = 5 + gen.nextInt(50);
             for (int i = 0; i < 3; i++) {
-                cellsX.add(headX - i);
+                cellsX.add(headX + i);
                 cellsY.add(headY);
                 field.cells[cellsX.get(cellsX.size() - 1)][cellsY.get(cellsY.size() - 1)] = 1;
             }
@@ -111,15 +123,21 @@ class Game extends SurfaceView implements Runnable {
         private void move() {
             switch (direction) {
                 case 0:
-                    cellsX.add((cellsX.get(cellsX.size() - 1) + 1) % 40);
+                    int aux = cellsX.get(cellsX.size() - 1) + 1;
+                    if (aux >= 40)
+                        aux -= 40;
+                    cellsX.add(aux);
                     cellsY.add(cellsY.get(cellsY.size() - 1));
                     break;
                 case 1:
                     cellsX.add(cellsX.get(cellsX.size() - 1));
+                    aux = cellsY.get(cellsY.size() - 1) + 1;
+                    if (aux >= 60)
+                        aux -= 60;
                     cellsY.add((cellsY.get(cellsY.size() - 1) + 1) % 60);
                     break;
                 case 2:
-                    int aux = cellsX.get(cellsX.size() - 1) - 1;
+                    aux = cellsX.get(cellsX.size() - 1) - 1;
                     if (aux < 0)
                         aux += 40;
                     cellsX.add(aux);
@@ -141,7 +159,7 @@ class Game extends SurfaceView implements Runnable {
                     break;
                 case 1:
                     //GAME OVER
-
+                    notOver = false;
                     break;
                 case 2:
                     length++;
