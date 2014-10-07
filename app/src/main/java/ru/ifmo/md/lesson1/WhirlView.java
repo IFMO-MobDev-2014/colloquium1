@@ -93,7 +93,7 @@ class WhirlView extends SurfaceView implements Runnable {
 
     void initField() {
         score = 0;
-        food = 10;
+        food = 50;
         scores.post(new Runnable() {
             public void run() {
                 scores.setText("" + score);
