@@ -12,9 +12,11 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.*;
+import android.os.Handler;
 
 class SnakeView extends SurfaceView implements Runnable {
     Context context;
+    Handler handler;
     MainActivity ma;
     int[] field;
     final int fieldW = 40;
@@ -62,12 +64,16 @@ class SnakeView extends SurfaceView implements Runnable {
         this.context = context;
     }
 
+    public void setMainActivity(MainActivity m) {
+        ma = m;
+    }
+
     public void setScoreView(TextView s) {
         score = s;
     }
 
-    public void setMainActivity(MainActivity m) {
-        ma = m;
+    public void setHandler(Handler h) {
+        handler = h;
     }
 
     public void resume() {
@@ -110,7 +116,12 @@ class SnakeView extends SurfaceView implements Runnable {
 
     void initField() {
         cnt = 0;
-        ma.setScore(cnt);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ma.setScore(cnt);
+            }
+        });
 
         Random rand = new Random(System.nanoTime());
         field = new int[fieldH * fieldW];
@@ -137,12 +148,17 @@ class SnakeView extends SurfaceView implements Runnable {
 
     private void gameOver() {
         initField();
-        ma.makeGOToast();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                ma.makeGOToast();
+            }
+        });
     }
 
     public static boolean contains(final ArrayList<Integer> array, final int v) {
         for (int i = 0; i < array.size(); i++)
-            if (array.get(i).equals((Integer)v))
+            if (array.get(i).equals((Integer) v))
                 return true;
 
         return false;
@@ -158,7 +174,12 @@ class SnakeView extends SurfaceView implements Runnable {
             gameOver();
         if (field[((currX + diffX[direction]) % fieldW) + ((currY + diffY[direction]) % fieldH )* fieldW] == green) {
             field[((currX + diffX[direction]) % fieldW) + ((currY + diffY[direction]) % fieldH )* fieldW] = 0;
-            ma.setScore(++cnt);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    ma.setScore(++cnt);
+                }
+            });
         }
         else {
             snakeX.remove(0);
