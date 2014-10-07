@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
 public class MyActivity extends Activity {
@@ -51,5 +52,13 @@ public class MyActivity extends Activity {
     public void onPause() {
         super.onPause();
         snakeView.pause();
+    }
+
+    public void snakeButtonRight(View view){
+       int a = 1;
+    }
+
+    public void snakeButtonLeft(View view){
+
     }
 }

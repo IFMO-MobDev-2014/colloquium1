@@ -33,19 +33,22 @@ public class SnakeEngine {
             tail.add(new int[]{i, 0});
             head = new int[]{i, 0};
         }
-        map[10][0] = 2;
-        map[15][0] = 2;
+
+        for (int i = 0; i < 50; i++)
+            createRandomFood();
     }
 
     //Функция зацикливания координат
     private int validateCoordinate(int d, int s){
-        if(d < 0) d = s;
+        if(d < 0) d = s - 1 ;
         if(d >= s) d = 0;
         return d;
     }
 
     //Игровой шаг
     public void snakeThink(){
+        if(isGameOver) return;
+
         //Раскладываем позицию головы
         int newx = head[0];
         int newy = head[1];
@@ -76,6 +79,8 @@ public class SnakeEngine {
             case 2:
                 //Ячейка с едой
                 //Просто не удаляем хвост - и змея удлиняется
+                //Остаётся лишь увеличить счёт
+                score++;
                 break;
         }
         head = new int[]{newx,newy};
@@ -102,5 +107,19 @@ public class SnakeEngine {
                 break;
             }
         }
+    }
+
+    //Поворот вправо
+    public void snakeRight(){
+        snakeAngle++;
+        if(snakeAngle > 3)
+            snakeAngle = 0;
+    }
+
+    //Поврот влево
+    public void snakeLeft(){
+        snakeAngle--;
+        if(snakeAngle < 0)
+            snakeAngle = 3;
     }
 }
