@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 
 public class MyActivity extends Activity {
+    SnakeView snakeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
+        snakeView = (SnakeView) findViewById(R.id.snakeView);
     }
 
 
@@ -35,5 +39,37 @@ public class MyActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void changeDirection(View view) {
+        int id = view.getId();
+        int direction = snakeView.getDirection();
+        switch(id) {
+            case R.id.bnright:
+                direction--;
+                if (direction < 0) {
+                    direction += 4;
+                }
+                break;
+            case R.id.bnleft:
+                direction++;
+                if (direction >= 4) {
+                    direction -= 4;
+                }
+                break;
+        }
+        snakeView.changeDirection(direction);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        snakeView.resume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        snakeView.pause();
     }
 }
