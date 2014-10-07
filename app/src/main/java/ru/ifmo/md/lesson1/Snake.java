@@ -81,7 +81,7 @@ class Snake extends SurfaceView implements Runnable {
                 long startTime = System.nanoTime();
                 if (k == 0) {
                     int temp = rand.nextInt(4);
-                    if ((temp < 2 && dir < 2) || (temp > 2 && dir > 2)) {
+                    if ((temp < 2 && dir < 2) || (temp > 1 && dir > 1)) {
                         temp = (temp + 2) % 4;
                     }
                     dir = temp;
