@@ -11,7 +11,7 @@
     <view
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="retloko.org.colloqium1.SnakeView"
+        class="ru.ifmo.md.colloquium1.SnakeView"
         android:id="@+id/snake_view"
         android:layout_above="@+id/linearLayout"
         android:layout_alignParentStart="true" />
