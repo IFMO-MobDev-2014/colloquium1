@@ -1,9 +1,16 @@
 package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class MyActivity extends Activity {
@@ -11,29 +18,22 @@ public class MyActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
+        setContentView(R.layout.snake_layout);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = size.y - findViewById(R.id.leftArrowButton).getHeight();
+        Button leftArrowButton = (Button) findViewById(R.id.leftArrowButton);
+        Button rightArrowButton = (Button) findViewById(R.id.rightArrowButton);
+        TextView scoreText = (TextView) findViewById(R.id.scoreText);
+        ImageView snakeScreen = (ImageView) findViewById(R.id.snakeScreenView);
+        new SnakeTimer(snakeScreen, height, width, leftArrowButton, rightArrowButton, scoreText).execute();
     }
+
 }
