@@ -9,8 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import java.util.ArrayList;
+ import java.util.ArrayList;
 import java.util.Random;
 
 /** * Created by thevery on 11/09/14.
@@ -23,40 +22,51 @@ class Snake extends SurfaceView implements Runnable {
             y = y2;
         }
 
-        MyPair(MyPair temp) {
-            x = temp.x;
-            y = temp.y;
-        }
+        MyPair() {}
     }
-    ArrayList<MyPair> snake = new ArrayList<MyPair>();
+    private ArrayList<MyPair> snake = new ArrayList<MyPair>();
 
-    Canvas canvas = null;
-    Random rand = new Random();
-    final static int fieldX = 40;
-    final static int fieldY = 60;
-    int score = 0;
-    private int k;
-    private final static int[] dx = new int[]{0, 0, -1, 1};
-    private final static int[] dy = new int[]{1, -1, 0, 0};
+    private Canvas canvas = null;
+    private Random rand = new Random();
+    private final static int fieldX = 40;
+    private final static int fieldY = 60;
+    private final static int[] dx = new int[]{0, 1, 0, -1};
+    private final static int[] dy = new int[]{-1, 0, 1, 0};
     private int dir;
-    boolean lose = false;
+    public int score;
+    private boolean lose = true;
 
-    private static final int CNT_FEED = 50;
+    private static final int CNT_FEED = 500;
     private static final int EAT = 1;
     private static final int SNAKE = 2;
-    Handler h2;
 
-    int[][] field = null;
-    float scaleX;
-    float scaleY;
-    Bitmap bitmap = null;
-    Paint paint = null;  SurfaceHolder holder; Thread thread = null;
+    private int[][] field = null;
+    private float scaleX;
+    private float scaleY;
+    private Bitmap bitmap = null;
+    private Handler h2;
+    private Paint paint = null;  SurfaceHolder holder;
+    private Thread thread = null;
     volatile boolean running = false;
-    int[] palette = {Color.WHITE, Color.RED, Color.GREEN};
+    private int[] palette = {Color.WHITE, Color.RED, Color.GREEN};
+
+    public void goRight() {
+        dir = (dir + 1 + 4) % 4;
+    }
+
+    public void goLeft() {
+        dir = (dir - 1 + 4) % 4;
+    }
+
+    public void restart() {
+        lose = true;
+    }
 
     public Snake(Context context, Handler h) {
         super(context);
         bitmap = Bitmap.createBitmap(fieldX, fieldY, Bitmap.Config.ARGB_4444);
+        paint = new Paint();
+        field = new int[fieldX][fieldY];
         h2 = h;
         holder = getHolder();
     }
@@ -75,36 +85,33 @@ class Snake extends SurfaceView implements Runnable {
     }
 
     public void run() {
-        initField();
+        int cntCycle = 0;
         while (running) {
             if (lose) {
-                h2.sendEmptyMessage(10);
+                h2.sendEmptyMessage(score);
+                lose = false;
                 initField();
-            }
-            if (holder.getSurface().isValid()) {
-                long startTime = System.nanoTime();
-                if (k == 0) {
-                    int temp = rand.nextInt(4);
-                    if ((temp < 2 && dir < 2) || (temp > 1 && dir > 1)) {
-                        temp = (temp + 2) % 4;
-                    }
-                    dir = temp;
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+            }
+
+            if (holder.getSurface().isValid()) {
 
                 canvas = holder.lockCanvas();
-
                 updateField();
-
                 setUpPixels();
                 onDraw(canvas);
                 holder.unlockCanvasAndPost(canvas);
 
-                long finishTime = System.nanoTime();
-                Log.i("TIME", "FPS: " + 1e9 / (finishTime - startTime));
-                k = (k + 1) % 5;
+                cntCycle = (cntCycle + 1) % 5;
                 try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ignore) {}
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -118,10 +125,16 @@ class Snake extends SurfaceView implements Runnable {
     }
 
     void initField() {
+        for (int i = 0; i < fieldX; i++) {
+            for (int j = 0; j < fieldY; j++) {
+                field[i][j] = 0;
+            }
+        }
         lose = false;
-        field = new int[fieldX][fieldY];
-        int temp = rand.nextInt(fieldX);
+        score = 0;
         snake.clear();
+
+        int temp = rand.nextInt(fieldX);
         for (int i = 5; i < 8; i++) {
             snake.add(new MyPair(temp, i));
             field[temp][i] = SNAKE;
@@ -130,43 +143,38 @@ class Snake extends SurfaceView implements Runnable {
         for (int i = 0; i < CNT_FEED;) {
             int x = rand.nextInt(fieldX);
             int y = rand.nextInt(fieldY);
-            if (field[x][y] == 0 && !(x == temp && y >4 && y < 8)) {
+            if (field[x][y] == 0) {
                 field[x][y] = EAT;
                 i++;
             }
         }
-        paint = new Paint();
+    }
+
+    void clearField() {
+        for (int i = 0; i < snake.size(); i++) {
+            field[snake.get(i).x][snake.get(i).y] = 0;
+        }
     }
 
     void updateField() {
+         clearField();
 
-       for (int i = 0; i < snake.size(); i++) {
-           field[snake.get(i).x][snake.get(i).y] = 0;
-       }
+        int newX = (snake.get(0).x + dx[dir] + fieldX) % fieldX;
+        int newY = (snake.get(0).y + dy[dir] + fieldY) % fieldY;
 
-       int newX = (snake.get(0).x + dx[dir] + fieldX) % fieldX;
-       int newY = (snake.get(0).y + dy[dir] + fieldY) % fieldY;
-       MyPair temp = snake.get(snake.size() - 1);
-
-       int good = 0;
-       if (field[newX][newY] == EAT) {
+        if (field[newX][newY] == EAT) {
             score++;
-            snake.add(new MyPair(snake.get(snake.size() - 1)));
-            Log.i("LOG", "eat");
-            good = 1;
+            snake.add(new MyPair());
         }
-
-        for (int i = snake.size() - good - 1; i >= 1; i--) {
-            snake.set(i, snake.get(i - 1));
-        }
-
+        MyPair temp = snake.get(snake.size() - 1);
         temp.x = newX;
         temp.y = newY;
-        snake.set(0, temp);
-        Log.i("cnt:", snake.size() + "");
-        for (int i = 0; i < snake.size(); i++) {
-            Log.i("LOG", snake.get(i).x + "  " + snake.get(i).y);
+
+        for (int i = snake.size() - 1; i > 0; i--) {
+           snake.set(i, snake.get(i - 1));
         }
+
+        snake.set(0, temp);
 
         for (int i = 0; i < snake.size(); i++) {
             if (field[snake.get(i).x][snake.get(i).y] == SNAKE) {
