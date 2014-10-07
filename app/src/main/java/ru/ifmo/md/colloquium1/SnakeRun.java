@@ -3,6 +3,8 @@ package ru.ifmo.md.colloquium1;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -17,6 +19,8 @@ public class SnakeRun extends SurfaceView implements Runnable {
     private Thread t = null;
     private SurfaceHolder holder;
     private boolean running;
+
+    private int score;
 
     private long totalTime;
 
@@ -43,6 +47,8 @@ public class SnakeRun extends SurfaceView implements Runnable {
 
     final private int fieldWidth = 40;
     final private int fieldHeight = 60;
+
+    private Paint paint;
 
     // 0 - empty, 1 - snake, 2 - apple
     private int field[][] = new int[fieldWidth][fieldHeight];
@@ -88,29 +94,46 @@ public class SnakeRun extends SurfaceView implements Runnable {
         }
     }
 
-    private void move() {
-
-    }
-
-    private void addToBody() {
-
+    private void changeDirection() {
+        int orientation = random.nextInt(3);
+        int ndx, ndy;
+        switch (orientation) {
+            case 0:
+                ndx = dx;
+                ndy = dy;
+                break;
+            case 1:
+                ndx = dy;
+                ndy = -dx;
+                break;
+            default:
+                ndx = -dy;
+                ndy = dx;
+                break;
+        }
+        dx = ndx;
+        dy = ndy;
     }
 
     private void update() {
-        System.out.println(field[fieldWidth/2][fieldHeight/2]);
+//        System.out.println(field[fieldWidth/2][fieldHeight/2]);
         GameCell head = snake.get(0);
         GameCell newHead = new GameCell(head.x + dx, head.y + dy);
-        removeCellFromBody(snake.size() - 1);
+
+        boolean found = false;
 
         for (ListIterator<GameCell> it = apples.listIterator(); it.hasNext();) {
             GameCell cur = it.next();
             if (newHead.getId() == cur.getId()) {
-                apples.remove(cur);
-                addApple();
+                found = true;
                 break;
             }
         }
-
+        if (!found) {
+            removeCellFromBody(snake.size() - 1);
+        } else {
+            score++;
+        }
         snake.add(0, newHead);
         field[newHead.x][newHead.y] = 1;
         pixels[newHead.getId()] = 0xff00ff00;
@@ -136,6 +159,8 @@ public class SnakeRun extends SurfaceView implements Runnable {
         }
         dx = 1;
         dy = 0;
+        paint = new Paint();
+        paint.setColor(Color.BLUE);
     }
 
     public void onResume() {
@@ -155,7 +180,7 @@ public class SnakeRun extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
-        totalTime = System.currentTimeMillis();
+        totalTime = 0;
         while (running) {
             if (holder.getSurface().isValid()) {
                 long startTime = System.currentTimeMillis();
@@ -164,6 +189,11 @@ public class SnakeRun extends SurfaceView implements Runnable {
                 update();
                 holder.unlockCanvasAndPost(canvas);
                 long finishTime = System.currentTimeMillis();
+                totalTime += (finishTime - startTime);
+                if (totalTime >= 5000) {
+                    changeDirection();
+                    totalTime = 0;
+                }
             }
         }
     }
@@ -172,5 +202,6 @@ public class SnakeRun extends SurfaceView implements Runnable {
         bitmap.setPixels(pixels, 0, fieldWidth, 0, 0, fieldWidth, fieldHeight);
         scaledBitmap = Bitmap.createScaledBitmap(bitmap, canvas.getWidth(), canvas.getHeight(), false);
         canvas.drawBitmap(scaledBitmap, 0, 0, null);
+        canvas.drawText(Integer.toString(score), 50, 50, paint);
     }
 }
