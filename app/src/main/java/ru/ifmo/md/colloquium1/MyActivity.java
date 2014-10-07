@@ -2,38 +2,68 @@ package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MyActivity extends Activity {
+    private SnakeView snakeView;
+    Button restartButton, leftButton, rightButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
-    }
+        FrameLayout layout = new FrameLayout(this);
+        snakeView = new SnakeView(this);
+        layout.addView(snakeView);
 
+        LinearLayout linearLayout = new LinearLayout(this);
+        restartButton = new Button(this);
+        restartButton.setText("restart");
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snakeView = new SnakeView(MyActivity.this);
+                setContentView(snakeView);
+            }
+        });
+
+        leftButton = new Button(this);
+        leftButton.setText("<~~");
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snakeView.changeDirection(false);
+            }
+        });
+
+        rightButton = new Button(this);
+        rightButton.setText("~~>");
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snakeView.changeDirection(true);
+            }
+        });
+
+        linearLayout.addView(restartButton);
+        linearLayout.addView(leftButton);
+        linearLayout.addView(rightButton);
+        layout.addView(linearLayout);
+        setContentView(layout);
+    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
+    public void onResume() {
+        super.onResume();
+        snakeView.resume();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void onPause() {
+        super.onPause();
+        snakeView.pause();
     }
-}
+    }
