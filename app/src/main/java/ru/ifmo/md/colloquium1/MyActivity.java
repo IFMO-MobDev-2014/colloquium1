@@ -1,39 +1,73 @@
-package ru.ifmo.md.colloquium1;
+package ru.ifmo.mobdev.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
-
-public class MyActivity extends Activity {
+/**
+ * Created by sugakandrey on 19.10.14.
+ */
+public class MainActivity extends Activity {
+    private MyView gameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my);
+        FrameLayout game = new FrameLayout(this);
+        gameView = new MyView(this);
+        LinearLayout gameWidgets = new LinearLayout (this);
+        Button restart = new Button(this);
+        Button left = new Button(this);
+        Button right = new Button(this);
+        restart.setText("restart");
+        left.setText("<-");
+        right.setText("->");
+
+        right.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameView.changeDirection(gameView.RIGHT);
+            }
+        });
+
+        left.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameView.changeDirection(gameView.LEFT);
+            }
+        });
+
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameView.restart();
+            }
+        });
+
+
+        gameWidgets.addView(restart);
+        gameWidgets.addView(left);
+        gameWidgets.addView(right);
+        game.addView(gameView);
+        game.addView(gameWidgets);
+        setContentView(game);
+
     }
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
+    protected void onPause() {
+        super.onPause();
+        gameView.pause();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    protected void onResume() {
+        super.onResume();
+        gameView.resume();
     }
 }
