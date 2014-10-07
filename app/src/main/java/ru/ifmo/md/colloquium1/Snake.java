@@ -43,6 +43,23 @@ public class Snake {
         public int getY() {
             return y;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Cell cell = (Cell) o;
+
+            return x == cell.x && y == cell.y;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = x;
+            result = 31 * result + y;
+            return result;
+        }
     }
 
     public static enum Direction {
@@ -108,6 +125,14 @@ public class Snake {
 
     public void setOnCollisionListener(OnCollisionListener onCollisionListener) {
         this.onCollisionListener = onCollisionListener;
+    }
+
+    public ScoreChangedListener getListener() {
+        return listener;
+    }
+
+    public OnCollisionListener getOnCollisionListener() {
+        return onCollisionListener;
     }
 
     public void pause() {

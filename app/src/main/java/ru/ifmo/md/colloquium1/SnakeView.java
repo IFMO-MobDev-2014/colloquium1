@@ -118,7 +118,12 @@ class SnakeView extends SurfaceView {
     public void restart() {
         pause();
         food = new Food();
+        Snake.ScoreChangedListener listener = snake.getListener();
+        Snake.OnCollisionListener collisionListener = snake.getOnCollisionListener();
         snake = new Snake(food);
+
+        snake.setListener(listener);
+        snake.setOnCollisionListener(collisionListener);
         resume();
     }
 }

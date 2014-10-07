@@ -1,6 +1,9 @@
 package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,10 +26,22 @@ public class MyActivity extends Activity {
             }
         });
 
+        final Context context = this;
+
         snakeView.setOnCollisionListener(new Snake.OnCollisionListener() {
             @Override
             public void onCollision() {
-                snakeView.restart();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Game over")
+                        .setMessage("Game over")
+                .setCancelable(false)
+                .setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        snakeView.restart();
+                    }
+                });
+                builder.create().show();
             }
         });
     }
