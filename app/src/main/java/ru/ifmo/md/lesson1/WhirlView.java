@@ -19,7 +19,7 @@ package ru.ifmo.md.lesson1;
     /**
      * Created by thevery on 11/09/14.
      */
-    class WhirlView extends SurfaceView {
+    public class WhirlView extends SurfaceView {
 
         private final int width = 40;
         private final int height = 60;
