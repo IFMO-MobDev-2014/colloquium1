@@ -41,7 +41,7 @@ class Snake extends SurfaceView implements Runnable {
     private int dir;
     boolean lose = false;
 
-    private static final int CNT_FEED = 300;
+    private static final int CNT_FEED = 50;
     private static final int EAT = 1;
     private static final int SNAKE = 2;
     Handler h2;
@@ -103,7 +103,7 @@ class Snake extends SurfaceView implements Runnable {
                 Log.i("TIME", "FPS: " + 1e9 / (finishTime - startTime));
                 k = (k + 1) % 5;
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1000);
                 } catch (InterruptedException ignore) {}
             }
         }
