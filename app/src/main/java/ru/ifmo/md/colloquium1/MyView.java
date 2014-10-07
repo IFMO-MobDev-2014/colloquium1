@@ -86,7 +86,7 @@ class MyView extends SurfaceView implements Runnable {
                 drawField(canvas);
                 holder.unlockCanvasAndPost(canvas);
 
-                SystemClock.sleep(70);
+                SystemClock.sleep(500);
             }
         }
     }
@@ -100,18 +100,11 @@ class MyView extends SurfaceView implements Runnable {
     void initField() {
         field = new int[WIDTH][HEIGHT];
         bitmap = Bitmap.createBitmap(WIDTH, HEIGHT, CONFIG);
-
         locateSnake();
-
-        food = new Pair[FOOD_NUMBER];
-        available = new boolean[FOOD_NUMBER];
-        Arrays.fill(available, true);
-
         locateFood();
     }
 
     void updateField() {
-
         Pair<Integer, Integer> tail = snake.removeLast();
 
         bitmap.setPixel(tail.first, tail.second, PALETTE[0]);
@@ -132,7 +125,6 @@ class MyView extends SurfaceView implements Runnable {
         }
 
         Pair<Integer, Integer> newHead = snake.getFirst();
-
 
         for (int i = 0; i < FOOD_NUMBER; ++i) {
             if (food[i].first == newHead.first && food[i].second == newHead.second && available[i]) {
@@ -215,6 +207,9 @@ class MyView extends SurfaceView implements Runnable {
     }
 
     void locateFood() {
+        food = new Pair[FOOD_NUMBER];
+        available = new boolean[FOOD_NUMBER];
+        Arrays.fill(available, true);
         for (int i = 0; i < FOOD_NUMBER; ++i) {
             int x = random.nextInt(WIDTH);
             int y = random.nextInt(HEIGHT);
