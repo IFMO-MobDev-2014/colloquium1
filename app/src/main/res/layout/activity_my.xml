@@ -17,12 +17,24 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:weightSum="1">
+
+        <view
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            class="ru.ifmo.md.colloquium1.SnakeView"
+            android:id="@+id/snakeview"
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_weight="0">
 
             <Button
                 android:layout_weight="0.33"
@@ -42,15 +54,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="@string/btn_right"
-                android:onClick="onButtonRightClick"/>
+                android:onClick="onButtonRightClick" />
 
         </LinearLayout>
 
-        <view
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            class="ru.ifmo.md.colloquium1.SnakeView"
-            android:id="@+id/snakeview"
-            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 </RelativeLayout>

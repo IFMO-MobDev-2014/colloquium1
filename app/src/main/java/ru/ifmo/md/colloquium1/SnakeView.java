@@ -57,7 +57,7 @@ class SnakeView extends SurfaceView {
     private final static int SIZE_LONG = 60;
     private final static int SIZE_SHORT = 40;
     private final static int STARTING_FOOD = 50;
-    private final static long STARTING_DELAY = 1000000000L;
+    private final static long STARTING_DELAY = 500000000L;
     private final static int COLOR_FOOD = 0xffff0000;
     private final static int COLOR_SNAKE = 0xff00ff00;
     private final static Paint paintWhiteSmall = new Paint();
