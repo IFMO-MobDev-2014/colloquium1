@@ -41,7 +41,7 @@ class Snake extends SurfaceView implements Runnable {
     private int dir;
     boolean lose = false;
 
-    private static final int CNT_FEED = 50;
+    private static final int CNT_FEED = 300;
     private static final int EAT = 1;
     private static final int SNAKE = 2;
     Handler h2;
@@ -76,7 +76,11 @@ class Snake extends SurfaceView implements Runnable {
 
     public void run() {
         initField();
-        while (running && !lose) {
+        while (running) {
+            if (lose) {
+                h2.sendEmptyMessage(10);
+                initField();
+            }
             if (holder.getSurface().isValid()) {
                 long startTime = System.nanoTime();
                 if (k == 0) {
@@ -99,14 +103,11 @@ class Snake extends SurfaceView implements Runnable {
                 Log.i("TIME", "FPS: " + 1e9 / (finishTime - startTime));
                 k = (k + 1) % 5;
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(10);
                 } catch (InterruptedException ignore) {}
             }
         }
 
-        if (lose) {
-            h2.sendEmptyMessage(10);
-        }
     }
 
     @Override
@@ -146,13 +147,12 @@ class Snake extends SurfaceView implements Runnable {
        int newX = (snake.get(0).x + dx[dir] + fieldX) % fieldX;
        int newY = (snake.get(0).y + dy[dir] + fieldY) % fieldY;
        MyPair temp = snake.get(snake.size() - 1);
-       temp.x = newX;
-       temp.y = newY;
 
        int good = 0;
        if (field[newX][newY] == EAT) {
             score++;
             snake.add(new MyPair(snake.get(snake.size() - 1)));
+            Log.i("LOG", "eat");
             good = 1;
         }
 
@@ -160,10 +160,18 @@ class Snake extends SurfaceView implements Runnable {
             snake.set(i, snake.get(i - 1));
         }
 
+        temp.x = newX;
+        temp.y = newY;
         snake.set(0, temp);
+        Log.i("cnt:", snake.size() + "");
+        for (int i = 0; i < snake.size(); i++) {
+            Log.i("LOG", snake.get(i).x + "  " + snake.get(i).y);
+        }
+
         for (int i = 0; i < snake.size(); i++) {
             if (field[snake.get(i).x][snake.get(i).y] == SNAKE) {
                 lose = true;
+                break;
             }
             field[snake.get(i).x][snake.get(i).y] = SNAKE;
         }
