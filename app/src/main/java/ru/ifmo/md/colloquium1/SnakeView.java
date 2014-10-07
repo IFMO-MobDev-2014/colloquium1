@@ -51,6 +51,7 @@ class SnakeView extends SurfaceView implements Runnable {
         holder = getHolder();
 
         this.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+
             public void onSwipeTop() {
                 snake.setDirection(SnakeGame.Direction.UP);
             }
@@ -101,7 +102,6 @@ class SnakeView extends SurfaceView implements Runnable {
         Log.i("TAG", "onSizeChanged: " + w + " " + h + " " + oldW + " " + oldH);
         scaleWidth = (float)w / WIDTH;
         scaleHeight = (float)h / HEIGHT;
-        //scaleHeight *= 0.9; // 10% for score
     }
 
     private void recalcTurn() {
@@ -118,7 +118,8 @@ class SnakeView extends SurfaceView implements Runnable {
         long now = System.nanoTime();
         long elapsed = now - lastGameUpdate;
         if (elapsed > GAME_UPDATE_INTERVAL) {
-            lose = !snake.tick();
+            SnakeGame.Cell cell = snake.tick();
+            lose = cell == SnakeGame.Cell.SNAKE;
             lastGameUpdate = now;
         }
         for (int i = 0; i < WIDTH ; i++) {
@@ -157,6 +158,9 @@ class SnakeView extends SurfaceView implements Runnable {
         canvas.scale(scaleWidth, scaleHeight);
         canvas.drawBitmap(pixels, 0, width, 0, 0, width, height, false, null);
         canvas.drawText("Score: " + snake.getScore(), 2, 0, paint);
+        if (lose) {
+            canvas.drawText("You lose", 15, 30, paint);
+        }
         canvas.restore();
     }
 }

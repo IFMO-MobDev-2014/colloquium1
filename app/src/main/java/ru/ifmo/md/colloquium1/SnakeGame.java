@@ -35,9 +35,9 @@ public class SnakeGame {
         return score;
     }
 
-    public boolean tick() {
+    public Cell tick() {
         if (lose) {
-            return false;
+            return Cell.SNAKE;
         }
         Coord head = snake.get(0);
         Coord next = next(head, direction);
@@ -65,7 +65,7 @@ public class SnakeGame {
             snake.removeLast();
         }
         updateField();
-        return true;
+        return Cell.EMPTY;
     }
 
     private void updateField() {

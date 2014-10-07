@@ -1,4 +1,4 @@
-package ru.ifmo.md.colloquium1.myapplication;
+package ru.ifmo.md.colloquium1;
 
 import android.content.Context;
 import android.view.GestureDetector;
