@@ -3,51 +3,73 @@ package ru.ifmo.md.colloquium1;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.AsyncTask;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.Random;
 
 /**
  * Created by pokrasko on 07.10.14.
  */
-public class ChangeableView extends ImageView implements Runnable {
-    int[] pixels;
-    ArrayList<Pair<Integer, Integer>> snake;
+class ChangeableView extends SurfaceView implements Runnable {
+    final int width = 40;
+    final int height = 60;
+    final int size = width * height;
+    int[] pixels = null;
+
+    LinkedList<IntPair> snake;
     int direction;
-    int width;
-    int height;
-    int size;
     int food;
     Random random;
     Bitmap bitmap;
     Rect rect;
     int w;
     int h;
-    boolean collision;
-    UpdateTask updateTask;
+    volatile boolean running = false;
     Context context;
-    Toast toast;
+    SurfaceHolder holder;
+    Thread thread;
     
     public ChangeableView(Context context) {
         super(context);
         this.context = context;
+        holder = getHolder();
+        init();
     }
 
-    private void initTask() {
-        width = 40;
-        height = 60;
-        size = width * height;
+    public ChangeableView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        holder = getHolder();
+        init();
+    }
+
+    public ChangeableView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        this.context = context;
+        holder = getHolder();
+        init();
+    }
+
+    private void init() {
         pixels = new int[size];
-        snake = new ArrayList<Pair<Integer, Integer>>(3);
+        Arrays.fill(pixels, Color.BLUE);
+        //for (int i = 0; i < 2350; i++) {
+            //pixels[i] = Color.BLUE;
+        //} //can't set more than 2350 pixels out of 2400
         random = new Random();
+        snake = new LinkedList<IntPair>();
         rect = new Rect(0, 0, w, h);
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
     }
 
-    private Pair<Integer, Integer> getDirection(int direction) {
+    private IntPair getDirection(int direction) {
         int dirX;
         int dirY;
         if (direction == 1) {
@@ -64,21 +86,25 @@ public class ChangeableView extends ImageView implements Runnable {
         } else {
             dirY = 0;
         }
-        return new Pair<Integer, Integer>(dirX, dirY);
+        return new IntPair(dirX, dirY);
     }
 
-    public void restart() {
+    private int getCoords(IntPair coords) {
+        return coords.first() + width * coords.second();
+    }
+
+    public void start() {
         int x = random.nextInt(width);
         int y = random.nextInt(height);
-        snake.add(new Pair<Integer, Integer>(x, y));
+        IntPair cur = new IntPair(x, y);
+        snake.add(new IntPair(cur));
         direction = random.nextInt(4);
-        Pair<Integer, Integer> directPair = getDirection(direction);
-        pixels[x + width * y] = 0xFF00FF00;
+        IntPair direct = getDirection(direction);
+        pixels[x + width * y] = Color.GREEN;
         for (int i = 1; i < 3; i++) {
-            x = (x + directPair.first()) % width;
-            y = (y + directPair.second()) % height;
-            snake.add(new Pair<Integer, Integer>(x, y));
-            pixels[x + width * y] = 0xFF00FF00;
+            cur = IntPair.add(cur, direct, width, height);
+            snake.add(new IntPair(cur));
+            pixels[x + width * y] = Color.GREEN;
         }
 
         food = 50;
@@ -89,56 +115,29 @@ public class ChangeableView extends ImageView implements Runnable {
                 x = random.nextInt(width);
                 y = random.nextInt(height);
             }
-            pixels[x + width * y] = 0xFFFF0000;
+            pixels[x + width * y] = Color.RED;
         }
-
-        invalidate();
     }
 
-    private class UpdateTask extends AsyncTask<Void, Void, Void> {
-        int collisionX;
-        int collisionY;
+    private void update() {
 
-        @Override
-        protected Void doInBackground(Void... ignored) {
-
-            Pair<Integer, Integer> directPair = getDirection(direction);
-            int headX = (snake.get(snake.size() - 1).first() + directPair.first()) % width;
-            int headY = (snake.get(snake.size() - 1).second() + directPair.second()) % height;
-            for (int i = 1; i < snake.size(); i++) {
-                if (headX == snake.get(i).first() && headY == snake.get(i).second()) {
-                    collision = true;
-                    collisionX = headX;
-                    collisionY = headY;
-                    for (int j = 0; j < snake.size() - 1; j++) {
-                        snake.set(j, snake.get(j + 1));
-                    }
-                    snake.set(snake.size() - 1, new Pair<Integer, Integer>(headX, headY));
-                    pixels[headX + width * headY] = 0xFF00FF00;
-                    pixels[collisionX + width * collisionY] = 0xFF0000FF;
-                    return null;
-                }
-            }
-            if (pixels[headX + width * headY] == 0xFFFF0000) {
-                snake.add(new Pair<Integer, Integer>(headX, headY));
-            } else {
-                pixels[snake.get(0).first() + width * snake.get(0).second()] = 0xFF000000;
-                for (int i = 0; i < snake.size() - 1; i++) {
-                    snake.set(i, snake.get(i + 1));
-                }
-                snake.set(snake.size() - 1, new Pair<Integer, Integer>(headX, headY));
-            }
-            pixels[headX + width * headY] = 0xFF00FF00;
-            return null;
+        IntPair direct = getDirection(direction);
+        Log.i("vars", "former head = " + snake.getLast().first() + "; " + snake.getLast().second());
+        IntPair head = IntPair.add(snake.getLast(), direct, width, height);
+        Log.i("vars", "head = " + head.first() + "; " + head.second());
+        Log.i("vars", "tail = " + snake.getFirst().first() + "; " + snake.getFirst().second());
+        if (pixels[getCoords(head)] == Color.GREEN && !head.equals(snake.getFirst())) {
+            ((MyActivity) context).outToast("Collision happened");
+            running = false;
         }
-
-        @Override
-        protected void onPostExecute(Void ignored) {
-            invalidate();
-            if (collision) {
-                outToast("Collision happened");
-            }
+        if (pixels[getCoords(head)] != Color.RED) {
+            pixels[getCoords(snake.removeFirst())] = Color.BLUE;
+        } else if (--food == 0) {
+            ((MyActivity) context).outToast("You won");
+            running = false;
         }
+        snake.add(head);
+        pixels[getCoords(head)] = Color.GREEN;
     }
 
     public void setDirection(int direction) {
@@ -149,26 +148,37 @@ public class ChangeableView extends ImageView implements Runnable {
         return direction;
     }
 
-    private void outToast(String message) {
-        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
     @Override
     public void draw(Canvas canvas) {
-        bitmap.setPixels(pixels, width, 0, 0, 0, width, height);
+        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         canvas.drawBitmap(bitmap, null, rect, null);
     }
 
-    public void run() {
+    public void resume() {
+        running = true;
+        thread = new Thread(this);
+        start();
+        thread.start();
+    }
+
+    public void pause() {
+        running = false;
         try {
-            initTask();
-            while (!collision) {
-                Thread.sleep(100);
-                updateTask = new UpdateTask();
-                updateTask.execute();
+            thread.join();
+        } catch (InterruptedException ignored) {}
+    }
+
+    public void run() {
+        while (running) {
+            if (holder.getSurface().isValid()) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ignored) {}
+                Canvas canvas = holder.lockCanvas();
+                update();
+                draw(canvas);
+                holder.unlockCanvasAndPost(canvas);
             }
-        } catch (InterruptedException e) {
         }
     }
 

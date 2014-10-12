@@ -1,35 +1,21 @@
 package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
-import android.media.Image;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ImageView;
-
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Random;
+import android.view.View;
+import android.widget.Toast;
 
 
 public class MyActivity extends Activity {
-    int[] pixels;
-    ArrayList<Pair<Integer, Integer>> snake;
-    int direction;
-    int width;
-    int height;
-    Bitmap bitmap;
-    Bitmap scaled;
-    Rect rect;
-    Canvas canvas;
-    ChangeableView imageView;
-    int w;
-    int h;
-    boolean collision;
+    private ChangeableView imageView;
+
+    public void outToast(final String message) {
+        this.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(MyActivity.this, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +24,44 @@ public class MyActivity extends Activity {
         imageView = (ChangeableView) findViewById(R.id.image);
     }
 
-    public void leftClick() {
-        imageView.setDirection((imageView.direction() - 1) % 4);
+    @Override
+    public void onResume() {
+        super.onResume();
+        imageView.resume();
     }
 
-    public void rightClick() {
-        imageView.setDirection((imageView.direction() + 1) % 4);
+    @Override
+    public void onPause() {
+        super.onPause();
+        imageView.pause();
     }
 
-    public void restart() {
-        imageView.restart();
+    public void leftClick(View view) {
+        if (imageView.direction() != 1) {
+            imageView.setDirection(3);
+        }
+    }
+
+    public void rightClick(View view) {
+        if (imageView.direction() != 3) {
+            imageView.setDirection(1);
+        }
+    }
+
+    public void upClick(View view) {
+        if (imageView.direction() != 2) {
+            imageView.setDirection(0);
+        }
+    }
+
+    public void downClick(View view) {
+        if (imageView.direction() != 0) {
+            imageView.setDirection(2);
+        }
+    }
+
+    public void restartClick(View view) {
+        imageView.pause();
+        imageView.resume();
     }
 }
