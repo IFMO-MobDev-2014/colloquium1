@@ -5,19 +5,17 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
-/**
- * Created by pokrasko on 07.10.14.
- */
-class ChangeableView extends SurfaceView implements Runnable {
+public class ChangeableView extends SurfaceView implements Runnable {
     final int width = 40;
     final int height = 60;
     final int size = width * height;
@@ -25,48 +23,49 @@ class ChangeableView extends SurfaceView implements Runnable {
 
     LinkedList<IntPair> snake;
     int direction;
-    int food;
     Random random;
+    int food;
+    int score;
+
     Bitmap bitmap;
     Rect rect;
-    int w;
-    int h;
     volatile boolean running = false;
     Context context;
     SurfaceHolder holder;
     Thread thread;
+    Handler toastHandler;
+    Handler scoreHandler;
     
     public ChangeableView(Context context) {
         super(context);
         this.context = context;
-        holder = getHolder();
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         init();
     }
 
     public ChangeableView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        holder = getHolder();
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         init();
     }
 
     public ChangeableView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         this.context = context;
-        holder = getHolder();
+        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         init();
     }
 
     private void init() {
-        pixels = new int[size];
-        Arrays.fill(pixels, Color.BLUE);
-        //for (int i = 0; i < 2350; i++) {
-            //pixels[i] = Color.BLUE;
-        //} //can't set more than 2350 pixels out of 2400
-        random = new Random();
-        snake = new LinkedList<IntPair>();
+        holder = getHolder();
+        scoreHandler = new Handler();
+        toastHandler = new Handler();
+    }
+
+    @Override
+    public void onSizeChanged(int w, int h, int oldW, int oldH) {
         rect = new Rect(0, 0, w, h);
-        bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
     }
 
     private IntPair getDirection(int direction) {
@@ -94,6 +93,11 @@ class ChangeableView extends SurfaceView implements Runnable {
     }
 
     public void start() {
+        pixels = new int[size];
+        Arrays.fill(pixels, Color.BLACK);
+        random = new Random();
+        snake = new LinkedList<IntPair>();
+
         int x = random.nextInt(width);
         int y = random.nextInt(height);
         IntPair cur = new IntPair(x, y);
@@ -104,40 +108,60 @@ class ChangeableView extends SurfaceView implements Runnable {
         for (int i = 1; i < 3; i++) {
             cur = IntPair.add(cur, direct, width, height);
             snake.add(new IntPair(cur));
-            pixels[x + width * y] = Color.GREEN;
+            pixels[getCoords(cur)] = Color.GREEN;
         }
 
         food = 50;
         for (int i = 0; i < food; i++) {
             x = random.nextInt(width);
             y = random.nextInt(height);
-            while (pixels[x + width * y] != 0) {
+            while (pixels[x + width * y] != Color.BLACK) {
                 x = random.nextInt(width);
                 y = random.nextInt(height);
             }
             pixels[x + width * y] = Color.RED;
         }
+        score = 0;
+        updateScore(score);
     }
 
-    private void update() {
+    private void updateField() {
 
         IntPair direct = getDirection(direction);
-        Log.i("vars", "former head = " + snake.getLast().first() + "; " + snake.getLast().second());
         IntPair head = IntPair.add(snake.getLast(), direct, width, height);
-        Log.i("vars", "head = " + head.first() + "; " + head.second());
-        Log.i("vars", "tail = " + snake.getFirst().first() + "; " + snake.getFirst().second());
         if (pixels[getCoords(head)] == Color.GREEN && !head.equals(snake.getFirst())) {
-            ((MyActivity) context).outToast("Collision happened");
+            outToast("Collision happened\n" + "Score: " + score);
             running = false;
         }
         if (pixels[getCoords(head)] != Color.RED) {
-            pixels[getCoords(snake.removeFirst())] = Color.BLUE;
-        } else if (--food == 0) {
-            ((MyActivity) context).outToast("You won");
-            running = false;
+            pixels[getCoords(snake.removeFirst())] = Color.BLACK;
+        } else {
+            updateScore(++score);
+            if (--food == 0) {
+                outToast("You won\n" + "Score: " + score);
+                running = false;
+            }
         }
         snake.add(head);
         pixels[getCoords(head)] = Color.GREEN;
+    }
+
+    private void updateScore(final int score) {
+        scoreHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ((MyActivity) context).scoreView.setText("Score: " + score);
+            }
+        });
+    }
+
+    private void outToast(final String message) {
+        toastHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void setDirection(int direction) {
@@ -148,8 +172,7 @@ class ChangeableView extends SurfaceView implements Runnable {
         return direction;
     }
 
-    @Override
-    public void draw(Canvas canvas) {
+    public void updateScreen(Canvas canvas) {
         bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
         canvas.drawBitmap(bitmap, null, rect, null);
     }
@@ -157,7 +180,6 @@ class ChangeableView extends SurfaceView implements Runnable {
     public void resume() {
         running = true;
         thread = new Thread(this);
-        start();
         thread.start();
     }
 
@@ -169,17 +191,17 @@ class ChangeableView extends SurfaceView implements Runnable {
     }
 
     public void run() {
+        start();
         while (running) {
             if (holder.getSurface().isValid()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                 } catch (InterruptedException ignored) {}
                 Canvas canvas = holder.lockCanvas();
-                update();
-                draw(canvas);
+                updateField();
+                updateScreen(canvas);
                 holder.unlockCanvasAndPost(canvas);
             }
         }
     }
-
 }

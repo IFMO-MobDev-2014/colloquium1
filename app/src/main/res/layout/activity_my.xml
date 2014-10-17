@@ -30,38 +30,64 @@
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:text="←"
             android:id="@+id/leftButton"
-            android:onClick="leftClick" />
+            android:onClick="leftClick"
+            android:layout_weight="0.1" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.3">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="↑"
+                android:id="@+id/upButton"
+                android:onClick="upClick" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="↓"
+                android:id="@+id/downButton"
+                android:onClick="downClick" />
+        </LinearLayout>
 
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="↑"
-            android:id="@+id/upButton"
-            android:onClick="upClick" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Restart"
-            android:id="@+id/restartButton"
-            android:layout_weight="1"
-            android:onClick="restartClick" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="↓"
-            android:id="@+id/downButton"
-            android:onClick="downClick" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:text="→"
             android:id="@+id/rightButton"
-            android:onClick="rightClick" />
+            android:onClick="rightClick"
+            android:layout_weight="0.1" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="0.5">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Score:"
+                android:id="@+id/score"
+                android:layout_weight="1"
+                style="@android:style/TextAppearance.DeviceDefault.Large"
+                android:gravity="center_horizontal" />
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Restart"
+                android:id="@+id/restartButton"
+                android:layout_weight="1"
+                android:onClick="restartClick" />
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

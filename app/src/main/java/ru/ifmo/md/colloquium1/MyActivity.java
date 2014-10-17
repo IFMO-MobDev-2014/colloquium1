@@ -3,25 +3,18 @@ package ru.ifmo.md.colloquium1;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
-
+import android.widget.TextView;
 
 public class MyActivity extends Activity {
     private ChangeableView imageView;
-
-    public void outToast(final String message) {
-        this.runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(MyActivity.this, message, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+    TextView scoreView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
         imageView = (ChangeableView) findViewById(R.id.image);
+        scoreView = (TextView) findViewById(R.id.score);
     }
 
     @Override
