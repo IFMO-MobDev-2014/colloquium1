@@ -2,38 +2,59 @@ package ru.ifmo.md.colloquium1;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-
+import android.view.View;
+import android.widget.TextView;
 
 public class MyActivity extends Activity {
+    private ChangeableView imageView;
+    TextView scoreView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my, menu);
-        return true;
+        imageView = (ChangeableView) findViewById(R.id.image);
+        scoreView = (TextView) findViewById(R.id.score);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void onResume() {
+        super.onResume();
+        imageView.resume();
+    }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    @Override
+    public void onPause() {
+        super.onPause();
+        imageView.pause();
+    }
+
+    public void leftClick(View view) {
+        if (imageView.direction() != 1) {
+            imageView.setDirection(3);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    public void rightClick(View view) {
+        if (imageView.direction() != 3) {
+            imageView.setDirection(1);
+        }
+    }
+
+    public void upClick(View view) {
+        if (imageView.direction() != 2) {
+            imageView.setDirection(0);
+        }
+    }
+
+    public void downClick(View view) {
+        if (imageView.direction() != 0) {
+            imageView.setDirection(2);
+        }
+    }
+
+    public void restartClick(View view) {
+        imageView.pause();
+        imageView.resume();
     }
 }
